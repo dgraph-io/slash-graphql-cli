@@ -1,9 +1,8 @@
-import {Command, flags} from '@oclif/command'
 import fetch from 'node-fetch'
 import open = require('open')
 import sleep = require('sleep-promise')
 import {stringify} from 'yaml'
-import {createDirectory, writeFile} from '../lib'
+import {createDirectory, writeFile, BaseCommand} from '../lib'
 import {join} from 'path'
 
 const environments = {
@@ -21,7 +20,7 @@ const environments = {
   },
 }
 
-export default class Login extends Command {
+export default class Login extends BaseCommand {
   static description = 'Login to Slash GraphQL (preview)'
 
   static hidden = true
@@ -31,7 +30,7 @@ export default class Login extends Command {
   ]
 
   static flags = {
-    environment: flags.string({description: 'Environment', default: 'prod', hidden: true}),
+    ...BaseCommand.globalFlags,
   }
 
   static args = [{name: 'file', description: 'Input File', default: '/dev/stdin'}]

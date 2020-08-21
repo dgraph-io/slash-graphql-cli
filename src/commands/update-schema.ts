@@ -1,5 +1,4 @@
-import {Command} from '@oclif/command'
-import {backendFromOpts, endpointFlags, readFile} from '../lib'
+import {readFile, BaseCommand} from '../lib'
 
 const QUERY = `
 mutation($sch: String!) {
@@ -11,7 +10,7 @@ mutation($sch: String!) {
   }
 }`
 
-export default class UpdateSchema extends Command {
+export default class UpdateSchema extends BaseCommand {
   static description = 'Update the schema in your backend'
 
   static examples = [
@@ -19,7 +18,7 @@ export default class UpdateSchema extends Command {
   ]
 
   static flags = {
-    ...endpointFlags,
+    ...BaseCommand.endpointFlags,
   }
 
   static args = [{name: 'file', description: 'Input File', default: '/dev/stdin'}]
@@ -27,7 +26,7 @@ export default class UpdateSchema extends Command {
   async run() {
     const opts = this.parse(UpdateSchema)
     const schema = await readFile(opts.args.file)
-    const backend = await backendFromOpts(opts)
+    const backend = await this.backendFromOpts(opts)
     const {errors} = await backend.adminQuery<{updateGQLSchema: {gqlSchema: {schema: string}}}>(QUERY, {
       sch: schema.toString(),
     })

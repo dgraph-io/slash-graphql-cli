@@ -1,5 +1,4 @@
-import {Command} from '@oclif/command'
-import {backendFromOpts, endpointFlags, writeFile} from '../lib'
+import {writeFile, BaseCommand} from '../lib'
 
 const QUERY = `{
   getGQLSchema {
@@ -7,7 +6,7 @@ const QUERY = `{
   }
 }`
 
-export default class GetSchema extends Command {
+export default class GetSchema extends BaseCommand {
   static description = 'Fetch the schema from your backend'
 
   static examples = [
@@ -15,14 +14,14 @@ export default class GetSchema extends Command {
   ]
 
   static flags = {
-    ...endpointFlags,
+    ...BaseCommand.endpointFlags,
   }
 
   static args = [{name: 'file', description: 'Output File', default: '/dev/stdout'}]
 
   async run() {
     const opts = this.parse(GetSchema)
-    const backend = await backendFromOpts(opts)
+    const backend = await this.backendFromOpts(opts)
     const {errors, data} = await backend.adminQuery<{getGQLSchema: {schema: string}}>(QUERY)
     if (errors) {
       for (const {message} of errors) {

@@ -1,9 +1,9 @@
-import {Command, flags} from '@oclif/command'
-import {backendFromOpts, endpointFlags, runCommand} from '../lib'
+import {flags} from '@oclif/command'
+import {runCommand, BaseCommand} from '../lib'
 import {cli} from 'cli-ux'
 import {join, resolve} from 'path'
 
-export default class ImportData extends Command {
+export default class ImportData extends BaseCommand {
   static description = 'Import your data back via live loader (requires docker)'
 
   static examples = [
@@ -11,7 +11,7 @@ export default class ImportData extends Command {
   ]
 
   static flags = {
-    ...endpointFlags,
+    ...BaseCommand.endpointFlags,
     confirm: flags.boolean({char: 'y', description: 'Skip Confirmation', default: false}),
   }
 
@@ -24,7 +24,7 @@ export default class ImportData extends Command {
 
   async run() {
     const opts = this.parse(ImportData)
-    const backend = await backendFromOpts(opts)
+    const backend = await this.backendFromOpts(opts)
     const inputFile = join(resolve(opts.args.input), 'g01.json.gz')
 
     if (!(opts.flags.confirm || await this.confirm())) {

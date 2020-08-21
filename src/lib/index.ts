@@ -1,5 +1,5 @@
 import {Output} from '@oclif/parser'
-import {flags} from '@oclif/command'
+import Command, {flags} from '@oclif/command'
 import * as fs from 'fs'
 import {spawn} from 'child_process'
 import {Backend} from './backend'
@@ -7,17 +7,23 @@ import * as getStdin from 'get-stdin'
 
 const {stat, mkdir} = fs.promises
 
-// Async so that we can eventually implement logic, and automatically get tokens
-export async function backendFromOpts(opts: Output<{ endpoint: string | undefined; token: string | undefined }, any>): Promise<Backend> {
-  if (opts.flags.endpoint && opts.flags.token) {
-    return new Backend(opts.flags.endpoint, opts.flags.token)
+export abstract class BaseCommand extends Command {
+  static globalFlags = {
+    environment: flags.string({description: 'Environment', default: 'prod', hidden: true}),
   }
-  throw new Error('Please pass an endpoint and api token')
-}
 
-export const endpointFlags = {
-  endpoint: flags.string({char: 'e', description: 'Slash GraphQL Endpoint'}),
-  token: flags.string({char: 't', description: 'Slash GraphQL Backend API Tokens'}),
+  static endpointFlags = {
+    endpoint: flags.string({char: 'e', description: 'Slash GraphQL Endpoint'}),
+    token: flags.string({char: 't', description: 'Slash GraphQL Backend API Tokens'}),
+  }
+
+  // Async so that we can eventually implement logic, and automatically get tokens
+  async  backendFromOpts(opts: Output<{ endpoint: string | undefined; token: string | undefined }, any>): Promise<Backend> {
+    if (opts.flags.endpoint && opts.flags.token) {
+      return new Backend(opts.flags.endpoint, opts.flags.token)
+    }
+    throw new Error('Please pass an endpoint and api token')
+  }
 }
 
 export async function createDirectory(path: string) {

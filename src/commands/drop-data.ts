@@ -1,5 +1,5 @@
-import {Command, flags} from '@oclif/command'
-import {backendFromOpts, endpointFlags} from '../lib'
+import {flags} from '@oclif/command'
+import {BaseCommand} from '../lib'
 import {cli} from 'cli-ux'
 
 const QUERY  = `
@@ -9,7 +9,7 @@ mutation($dropSchema: Boolean!) {
   }
 }`
 
-export default class DropData extends Command {
+export default class DropData extends BaseCommand {
   static description = 'Drop all data in your backend'
 
   static examples = [
@@ -17,7 +17,7 @@ export default class DropData extends Command {
   ]
 
   static flags = {
-    ...endpointFlags,
+    ...BaseCommand.endpointFlags,
     'drop-schema': flags.boolean({char: 's', description: 'Drop Schema along with the data', default: false}),
     confirm: flags.boolean({char: 'y', description: 'Skip Confirmation', default: false}),
   }
@@ -29,7 +29,7 @@ export default class DropData extends Command {
 
   async run() {
     const opts = this.parse(DropData)
-    const backend = await backendFromOpts(opts)
+    const backend = await this.backendFromOpts(opts)
 
     if (!(opts.flags.confirm || await this.confirm())) {
       this.log('Aborting')

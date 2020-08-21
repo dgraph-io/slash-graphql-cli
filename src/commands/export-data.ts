@@ -1,5 +1,4 @@
-import {Command} from '@oclif/command'
-import {backendFromOpts, endpointFlags, createDirectory, getFileName} from '../lib'
+import {createDirectory, getFileName, BaseCommand} from '../lib'
 import {cli} from 'cli-ux'
 import {createWriteStream} from 'fs'
 import {join} from 'path'
@@ -12,7 +11,7 @@ mutation {
   }
 }`
 
-export default class ExportData extends Command {
+export default class ExportData extends BaseCommand {
   static description = 'Export data from your backend'
 
   static examples = [
@@ -20,7 +19,7 @@ export default class ExportData extends Command {
   ]
 
   static flags = {
-    ...endpointFlags,
+    ...BaseCommand.endpointFlags,
   }
 
   static args = [{name: 'outputdir', description: 'Output Directory', required: true}]
@@ -28,7 +27,7 @@ export default class ExportData extends Command {
   // FIXME: The progress bar can get a lot better here
   async run() {
     const opts = this.parse(ExportData)
-    const backend = await backendFromOpts(opts)
+    const backend = await this.backendFromOpts(opts)
     const outputDir = opts.args.outputdir as string
 
     await createDirectory(outputDir)
