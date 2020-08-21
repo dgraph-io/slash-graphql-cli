@@ -66,7 +66,8 @@ export abstract class BaseCommand extends Command {
       return new Backend(opts.flags.endpoint, opts.flags.token)
     }
     if (opts.flags.endpoint) {
-      const token = await this.getEndpointJWTToken(getEnvironment(opts.flags.environment).apiServer, opts.flags.endpoint)
+      const {apiServer, authFile} = getEnvironment(opts.flags.environment)
+      const token = await this.getEndpointJWTToken(apiServer, authFile, opts.flags.endpoint)
       if (token) {
         return new Backend(opts.flags.endpoint, token)
       }
@@ -74,9 +75,9 @@ export abstract class BaseCommand extends Command {
     throw new Error('Please pass an endpoint and api token')
   }
 
-  async getEndpointJWTToken(apiServer: string, endpoint: string) {
+  async getEndpointJWTToken(apiServer: string, authFile: string, endpoint: string) {
     const host = new URL(endpoint).host
-    const token = await this.getAccessToken()
+    const token = await this.getAccessToken(authFile)
     if (!token) {
       return null
     }
@@ -95,9 +96,9 @@ export abstract class BaseCommand extends Command {
     return null
   }
 
-  async getAccessToken() {
+  async getAccessToken(authFile: string) {
     try {
-      const yamlContent = await readFile(join(this.config.configDir, 'auth.yml'))
+      const yamlContent = await readFile(join(this.config.configDir, authFile))
       const {apiTime, access_token, expires_in} = yaml.parse(yamlContent.toString())
       if (new Date() > new Date(new Date(apiTime).getTime() + (1000 * expires_in))) {
         this.warn('Access Token Expired')

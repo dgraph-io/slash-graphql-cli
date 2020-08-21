@@ -7,9 +7,7 @@ import {join} from 'path'
 import {getEnvironment} from '../lib/environments'
 
 export default class Login extends BaseCommand {
-  static description = 'Login to Slash GraphQL (preview)'
-
-  static hidden = true
+  static description = 'Login to Slash GraphQL. Calling this function will keep you logged in for 24 hours, and you will not need to pass access tokens for any backends that you own'
 
   static examples = [
     '$ slash-graphql login',
@@ -23,7 +21,7 @@ export default class Login extends BaseCommand {
 
   async run() {
     const opts = this.parse(Login)
-    const {auth0domain, auth0clientId, audience} = getEnvironment(opts.flags.environment)
+    const {auth0domain, auth0clientId, audience, authFile} = getEnvironment(opts.flags.environment)
 
     const deviceCodeResponse = await fetch(`https://${auth0domain}/oauth/device/code`, {
       method: 'POST',
@@ -44,7 +42,7 @@ export default class Login extends BaseCommand {
     }
 
     await createDirectory(this.config.configDir)
-    await writeFile(join(this.config.configDir, 'auth.yml'), stringify(token))
+    await writeFile(join(this.config.configDir, authFile), stringify(token))
 
     this.log('Logged In!')
   }
