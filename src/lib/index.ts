@@ -3,6 +3,7 @@ import {flags} from '@oclif/command'
 import * as fs from 'fs'
 import {spawn} from 'child_process'
 import {Backend} from './backend'
+import * as getStdin from 'get-stdin'
 
 const {stat, mkdir} = fs.promises
 
@@ -41,4 +42,19 @@ export function runCommand(command: string, ...args: string[]): Promise<number> 
       stdio: 'inherit',
     }).on('close', resolve)
   })
+}
+
+export async function writeFile(path: string, data: string) {
+  if (path === '/dev/stdout') {
+    await new Promise(resolve => process.stdout.write(data, resolve))
+  } else {
+    await fs.promises.writeFile(path, data)
+  }
+}
+
+export async function readFile(path: string): Promise<Buffer> {
+  if (path === '/dev/stdin') {
+    return getStdin.buffer()
+  }
+  return fs.promises.readFile(path)
 }

@@ -1,8 +1,5 @@
 import {Command} from '@oclif/command'
-import {backendFromOpts, endpointFlags} from '../lib'
-import * as fs from 'fs'
-
-const {writeFile} = fs.promises
+import {backendFromOpts, endpointFlags, writeFile} from '../lib'
 
 const QUERY = `{
   getGQLSchema {

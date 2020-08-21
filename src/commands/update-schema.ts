@@ -1,8 +1,5 @@
 import {Command} from '@oclif/command'
-import {backendFromOpts, endpointFlags} from '../lib'
-import * as fs from 'fs'
-
-const {readFile} = fs.promises
+import {backendFromOpts, endpointFlags, readFile} from '../lib'
 
 const QUERY = `
 mutation($sch: String!) {

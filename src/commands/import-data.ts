@@ -1,8 +1,6 @@
 import {Command, flags} from '@oclif/command'
 import {backendFromOpts, endpointFlags, runCommand} from '../lib'
 import {cli} from 'cli-ux'
-import {spawn} from 'child_process'
-import {ENOENT} from 'constants'
 import {join, resolve} from 'path'
 
 export default class ImportData extends Command {
