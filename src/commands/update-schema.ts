@@ -18,6 +18,7 @@ export default class UpdateSchema extends BaseCommand {
   ]
 
   static flags = {
+    ...BaseCommand.commonFlags,
     ...BaseCommand.endpointFlags,
   }
 

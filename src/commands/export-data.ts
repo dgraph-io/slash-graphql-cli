@@ -19,6 +19,7 @@ export default class ExportData extends BaseCommand {
   ]
 
   static flags = {
+    ...BaseCommand.commonFlags,
     ...BaseCommand.endpointFlags,
   }
 

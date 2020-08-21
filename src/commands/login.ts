@@ -4,21 +4,7 @@ import sleep = require('sleep-promise')
 import {stringify} from 'yaml'
 import {createDirectory, writeFile, BaseCommand} from '../lib'
 import {join} from 'path'
-
-const environments = {
-  stg: {
-    auth0domain: 'dev-dgraph-saas.auth0.com',
-    auth0clientId: 'P221BC5Rv1ByZOHGCcCJ7U07d0njVIKt',
-    audience: 'http://localhost:8070',
-    apiServer: 'https://app.thegaas.com',
-  },
-  prod: {
-    auth0domain: 'login.dgraph.io',
-    auth0clientId: 'bar',
-    apiServer: 'https://api.cloud.dgraph.io',
-    audience: 'https://slash.dgraph.io',
-  },
-}
+import {getEnvironment} from '../lib/environments'
 
 export default class Login extends BaseCommand {
   static description = 'Login to Slash GraphQL (preview)'
@@ -30,14 +16,14 @@ export default class Login extends BaseCommand {
   ]
 
   static flags = {
-    ...BaseCommand.globalFlags,
+    ...BaseCommand.commonFlags,
   }
 
   static args = [{name: 'file', description: 'Input File', default: '/dev/stdin'}]
 
   async run() {
     const opts = this.parse(Login)
-    const {auth0domain, auth0clientId, audience} = opts.flags.environment === 'stg' ? environments.stg : environments.prod
+    const {auth0domain, auth0clientId, audience} = getEnvironment(opts.flags.environment)
 
     const deviceCodeResponse = await fetch(`https://${auth0domain}/oauth/device/code`, {
       method: 'POST',

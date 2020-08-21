@@ -17,6 +17,7 @@ export default class DropData extends BaseCommand {
   ]
 
   static flags = {
+    ...BaseCommand.commonFlags,
     ...BaseCommand.endpointFlags,
     'drop-schema': flags.boolean({char: 's', description: 'Drop Schema along with the data', default: false}),
     confirm: flags.boolean({char: 'y', description: 'Skip Confirmation', default: false}),

@@ -11,6 +11,7 @@ export default class ImportData extends BaseCommand {
   ]
 
   static flags = {
+    ...BaseCommand.commonFlags,
     ...BaseCommand.endpointFlags,
     confirm: flags.boolean({char: 'y', description: 'Skip Confirmation', default: false}),
   }

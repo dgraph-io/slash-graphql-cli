@@ -14,6 +14,7 @@ export default class GetSchema extends BaseCommand {
   ]
 
   static flags = {
+    ...BaseCommand.commonFlags,
     ...BaseCommand.endpointFlags,
   }
 
