@@ -16,8 +16,8 @@ class Backend {
     this.token = t
   }
 
-  async adminQuery<T>(query: string, variables = {}): Promise<GraphQLResponse<T>> {
-    const adminEndpoint = this.endpoint.replace(/graphql$/, 'admin')
+  private async doGraphQLQuery<T>(query: string, variables = {}, {endpoint = '/admin'} = {}): Promise<GraphQLResponse<T>> {
+    const adminEndpoint = this.endpoint.replace(/\/graphql$/, endpoint)
     const response = await fetch(adminEndpoint, {
       method: 'POST',
       headers: {
@@ -34,6 +34,14 @@ class Backend {
       data: json.data as T,
       errors: json.errors as [{message: string}],
     }
+  }
+
+  async adminQuery<T>(query: string, variables = {}): Promise<GraphQLResponse<T>> {
+    return this.doGraphQLQuery<T>(query, variables, {endpoint: '/admin'})
+  }
+
+  async slashAdminQuery<T>(query: string, variables = {}): Promise<GraphQLResponse<T>> {
+    return this.doGraphQLQuery<T>(query, variables, {endpoint: '/admin/slash'})
   }
 }
 

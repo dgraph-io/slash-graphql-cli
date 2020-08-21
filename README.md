@@ -28,28 +28,30 @@ USAGE
 <!-- usagestop -->
 # Commands
 <!-- commands -->
-* [`slash-graphql hello [FILE]`](#slash-graphql-hello-file)
+* [`slash-graphql get-schema [FILE]`](#slash-graphql-get-schema-file)
 * [`slash-graphql help [COMMAND]`](#slash-graphql-help-command)
+* [`slash-graphql update-schema [FILE]`](#slash-graphql-update-schema-file)
 
-## `slash-graphql hello [FILE]`
+## `slash-graphql get-schema [FILE]`
 
-describe the command here
+Fetch the schema from your backend
 
 ```
 USAGE
-  $ slash-graphql hello [FILE]
+  $ slash-graphql get-schema [FILE]
+
+ARGUMENTS
+  FILE  [default: /dev/stdout] Output File
 
 OPTIONS
-  -f, --force
-  -h, --help       show CLI help
-  -n, --name=name  name to print
+  -e, --endpoint=endpoint  Slash GraphQL Endpoint
+  -t, --token=token        Slash GraphQL Backend API Tokens
 
 EXAMPLE
-  $ slash-graphql hello
-  hello world from ./src/hello.ts!
+  $ slash-graphql get-schema -e https://frozen-mango.cloud.dgraph.io/graphql -t secretToken=
 ```
 
-_See code: [src/commands/hello.ts](https://github.com/dgraph-io/slash-graphql-cli/blob/v0.0.0/src/commands/hello.ts)_
+_See code: [src/commands/get-schema.ts](https://github.com/dgraph-io/slash-graphql-cli/blob/v0.0.0/src/commands/get-schema.ts)_
 
 ## `slash-graphql help [COMMAND]`
 
@@ -67,4 +69,25 @@ OPTIONS
 ```
 
 _See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v3.2.0/src/commands/help.ts)_
+
+## `slash-graphql update-schema [FILE]`
+
+Fetch the schema from your backend
+
+```
+USAGE
+  $ slash-graphql update-schema [FILE]
+
+ARGUMENTS
+  FILE  [default: /dev/stdin] Input File
+
+OPTIONS
+  -e, --endpoint=endpoint  Slash GraphQL Endpoint
+  -t, --token=token        Slash GraphQL Backend API Tokens
+
+EXAMPLE
+  $ slash-graphql update-schema -e https://frozen-mango.cloud.dgraph.io/graphql -t secretToken= schema-file.graphql
+```
+
+_See code: [src/commands/update-schema.ts](https://github.com/dgraph-io/slash-graphql-cli/blob/v0.0.0/src/commands/update-schema.ts)_
 <!-- commandsstop -->
