@@ -1,5 +1,5 @@
 import {Command, flags} from '@oclif/command'
-import {endpointAuth} from '../lib'
+import {backendFromOpts, endpointFlags} from '../lib'
 import {cli} from 'cli-ux'
 
 const QUERY  = `
@@ -13,12 +13,11 @@ export default class DropData extends Command {
   static description = 'Drop all data in your backend'
 
   static examples = [
-    '$ slash-graphql drop-data -e https://frozen-mango.cloud.dgraph.io/graphql -t secretToken= schema-file.graphql',
+    '$ slash-graphql drop-data -e https://frozen-mango.cloud.dgraph.io/graphql -t <apiToken> schema-file.graphql',
   ]
 
   static flags = {
-    endpoint: flags.string({char: 'e', description: 'Slash GraphQL Endpoint'}),
-    token: flags.string({char: 't', description: 'Slash GraphQL Backend API Tokens'}),
+    ...endpointFlags,
     'drop-schema': flags.boolean({char: 's', description: 'Drop Schema along with the data', default: false}),
     confirm: flags.boolean({char: 'y', description: 'Skip Confirmation', default: false}),
   }
@@ -30,7 +29,7 @@ export default class DropData extends Command {
 
   async run() {
     const opts = this.parse(DropData)
-    const backend = await endpointAuth(opts)
+    const backend = await backendFromOpts(opts)
 
     if (!(opts.flags.confirm || await this.confirm())) {
       this.log('Aborting')

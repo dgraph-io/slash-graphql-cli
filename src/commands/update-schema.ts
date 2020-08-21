@@ -1,5 +1,5 @@
-import {Command, flags} from '@oclif/command'
-import {endpointAuth} from '../lib'
+import {Command} from '@oclif/command'
+import {backendFromOpts, endpointFlags} from '../lib'
 import * as fs from 'fs'
 
 const {readFile} = fs.promises
@@ -18,12 +18,11 @@ export default class UpdateSchema extends Command {
   static description = 'Update the schema in your backend'
 
   static examples = [
-    '$ slash-graphql update-schema -e https://frozen-mango.cloud.dgraph.io/graphql -t secretToken= schema-file.graphql',
+    '$ slash-graphql update-schema -e https://frozen-mango.cloud.dgraph.io/graphql -t <apiToken> schema-file.graphql',
   ]
 
   static flags = {
-    endpoint: flags.string({char: 'e', description: 'Slash GraphQL Endpoint'}),
-    token: flags.string({char: 't', description: 'Slash GraphQL Backend API Tokens'}),
+    ...endpointFlags,
   }
 
   static args = [{name: 'file', description: 'Input File', default: '/dev/stdin'}]
@@ -31,7 +30,7 @@ export default class UpdateSchema extends Command {
   async run() {
     const opts = this.parse(UpdateSchema)
     const schema = await readFile(opts.args.file)
-    const backend = await endpointAuth(opts)
+    const backend = await backendFromOpts(opts)
     const {errors} = await backend.adminQuery<{updateGQLSchema: {gqlSchema: {schema: string}}}>(QUERY, {
       sch: schema.toString(),
     })

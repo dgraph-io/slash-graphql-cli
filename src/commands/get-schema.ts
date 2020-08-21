@@ -1,5 +1,5 @@
-import {Command, flags} from '@oclif/command'
-import {endpointAuth} from '../lib'
+import {Command} from '@oclif/command'
+import {backendFromOpts, endpointFlags} from '../lib'
 import * as fs from 'fs'
 
 const {writeFile} = fs.promises
@@ -14,19 +14,18 @@ export default class GetSchema extends Command {
   static description = 'Fetch the schema from your backend'
 
   static examples = [
-    '$ slash-graphql get-schema -e https://frozen-mango.cloud.dgraph.io/graphql -t secretToken=',
+    '$ slash-graphql get-schema -e https://frozen-mango.cloud.dgraph.io/graphql -t <apiToken>',
   ]
 
   static flags = {
-    endpoint: flags.string({char: 'e', description: 'Slash GraphQL Endpoint'}),
-    token: flags.string({char: 't', description: 'Slash GraphQL Backend API Tokens'}),
+    ...endpointFlags,
   }
 
   static args = [{name: 'file', description: 'Output File', default: '/dev/stdout'}]
 
   async run() {
     const opts = this.parse(GetSchema)
-    const backend = await endpointAuth(opts)
+    const backend = await backendFromOpts(opts)
     const {errors, data} = await backend.adminQuery<{getGQLSchema: {schema: string}}>(QUERY)
     if (errors) {
       for (const {message} of errors) {

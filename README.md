@@ -29,6 +29,7 @@ USAGE
 # Commands
 <!-- commands -->
 * [`slash-graphql drop-data`](#slash-graphql-drop-data)
+* [`slash-graphql export-data OUTPUTDIR`](#slash-graphql-export-data-outputdir)
 * [`slash-graphql get-schema [FILE]`](#slash-graphql-get-schema-file)
 * [`slash-graphql help [COMMAND]`](#slash-graphql-help-command)
 * [`slash-graphql update-schema [FILE]`](#slash-graphql-update-schema-file)
@@ -48,10 +49,31 @@ OPTIONS
   -y, --confirm            Skip Confirmation
 
 EXAMPLE
-  $ slash-graphql drop-data -e https://frozen-mango.cloud.dgraph.io/graphql -t secretToken= schema-file.graphql
+  $ slash-graphql drop-data -e https://frozen-mango.cloud.dgraph.io/graphql -t <apiToken> schema-file.graphql
 ```
 
 _See code: [src/commands/drop-data.ts](https://github.com/dgraph-io/slash-graphql-cli/blob/v0.1.0/src/commands/drop-data.ts)_
+
+## `slash-graphql export-data OUTPUTDIR`
+
+Export data from your backend
+
+```
+USAGE
+  $ slash-graphql export-data OUTPUTDIR
+
+ARGUMENTS
+  OUTPUTDIR  Output Directory
+
+OPTIONS
+  -e, --endpoint=endpoint  Slash GraphQL Endpoint
+  -t, --token=token        Slash GraphQL Backend API Tokens
+
+EXAMPLE
+  $ slash-graphql get-schema -e https://frozen-mango.cloud.dgraph.io/graphql -t <apiToken>
+```
+
+_See code: [src/commands/export-data.ts](https://github.com/dgraph-io/slash-graphql-cli/blob/v0.1.0/src/commands/export-data.ts)_
 
 ## `slash-graphql get-schema [FILE]`
 
@@ -69,7 +91,7 @@ OPTIONS
   -t, --token=token        Slash GraphQL Backend API Tokens
 
 EXAMPLE
-  $ slash-graphql get-schema -e https://frozen-mango.cloud.dgraph.io/graphql -t secretToken=
+  $ slash-graphql get-schema -e https://frozen-mango.cloud.dgraph.io/graphql -t <apiToken>
 ```
 
 _See code: [src/commands/get-schema.ts](https://github.com/dgraph-io/slash-graphql-cli/blob/v0.1.0/src/commands/get-schema.ts)_
@@ -107,7 +129,7 @@ OPTIONS
   -t, --token=token        Slash GraphQL Backend API Tokens
 
 EXAMPLE
-  $ slash-graphql update-schema -e https://frozen-mango.cloud.dgraph.io/graphql -t secretToken= schema-file.graphql
+  $ slash-graphql update-schema -e https://frozen-mango.cloud.dgraph.io/graphql -t <apiToken> schema-file.graphql
 ```
 
 _See code: [src/commands/update-schema.ts](https://github.com/dgraph-io/slash-graphql-cli/blob/v0.1.0/src/commands/update-schema.ts)_
