@@ -1,6 +1,11 @@
 import {Output} from '@oclif/parser'
 import fetch from 'node-fetch'
 
+type GraphQLResponse<T> = {
+  data: T;
+  errors?: [{message: string}];
+}
+
 class Backend {
   private endpoint: string;
 
@@ -11,11 +16,10 @@ class Backend {
     this.token = t
   }
 
-  async adminQuery<T>(query: string, variables = {}): Promise<T> {
+  async adminQuery<T>(query: string, variables = {}): Promise<GraphQLResponse<T>> {
     const adminEndpoint = this.endpoint.replace(/graphql$/, 'admin')
     const response = await fetch(adminEndpoint, {
       method: 'POST',
-      url: adminEndpoint,
       headers: {
         'Content-Type': 'application/json',
         Authorization: this.token,
@@ -26,7 +30,10 @@ class Backend {
       throw new Error('Could not connect to your slash backend. Did you pass in the correct api token?')
     }
     const json = await response.json()
-    return json.data as T
+    return {
+      data: json.data as T,
+      errors: json.errors as [{message: string}],
+    }
   }
 }
 
