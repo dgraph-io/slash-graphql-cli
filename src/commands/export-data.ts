@@ -16,7 +16,7 @@ export default class ExportData extends Command {
   static description = 'Export data from your backend'
 
   static examples = [
-    '$ slash-graphql get-schema -e https://frozen-mango.cloud.dgraph.io/graphql -t <apiToken>',
+    '$ slash-graphql export-data -e https://frozen-mango.cloud.dgraph.io/graphql -t <apiToken> ./output-directory',
   ]
 
   static flags = {

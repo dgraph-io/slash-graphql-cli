@@ -2,6 +2,7 @@ import {Output} from '@oclif/parser'
 import fetch from 'node-fetch'
 import {flags} from '@oclif/command'
 import * as fs from 'fs'
+import {spawn} from 'child_process'
 
 const {stat, mkdir} = fs.promises
 
@@ -47,6 +48,18 @@ class Backend {
   async slashAdminQuery<T>(query: string, variables = {}): Promise<GraphQLResponse<T>> {
     return this.doGraphQLQuery<T>(query, variables, {endpoint: '/admin/slash'})
   }
+
+  getToken() {
+    return this.token
+  }
+
+  getEndpoint() {
+    return this.endpoint
+  }
+
+  getGRPCEndpoint() {
+    return `${new URL(this.endpoint).host.replace('.', '.grpc.')}:443`
+  }
 }
 
 // Async so that we can eventually implement logic, and automatically get tokens
@@ -76,4 +89,12 @@ export async function createDirectory(path: string) {
 export function getFileName(path: string): string {
   const parts = new URL(path).pathname.split('/')
   return parts[parts.length - 1]
+}
+
+export function runCommand(command: string, ...args: string[]): Promise<number> {
+  return new Promise(resolve => {
+    spawn(command, args, {
+      stdio: 'inherit',
+    }).on('close', resolve)
+  })
 }

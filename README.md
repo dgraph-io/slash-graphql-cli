@@ -32,6 +32,7 @@ USAGE
 * [`slash-graphql export-data OUTPUTDIR`](#slash-graphql-export-data-outputdir)
 * [`slash-graphql get-schema [FILE]`](#slash-graphql-get-schema-file)
 * [`slash-graphql help [COMMAND]`](#slash-graphql-help-command)
+* [`slash-graphql import-data INPUT`](#slash-graphql-import-data-input)
 * [`slash-graphql update-schema [FILE]`](#slash-graphql-update-schema-file)
 
 ## `slash-graphql drop-data`
@@ -70,7 +71,7 @@ OPTIONS
   -t, --token=token        Slash GraphQL Backend API Tokens
 
 EXAMPLE
-  $ slash-graphql get-schema -e https://frozen-mango.cloud.dgraph.io/graphql -t <apiToken>
+  $ slash-graphql export-data -e https://frozen-mango.cloud.dgraph.io/graphql -t <apiToken> ./output-directory
 ```
 
 _See code: [src/commands/export-data.ts](https://github.com/dgraph-io/slash-graphql-cli/blob/v0.1.0/src/commands/export-data.ts)_
@@ -112,6 +113,28 @@ OPTIONS
 ```
 
 _See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v3.2.0/src/commands/help.ts)_
+
+## `slash-graphql import-data INPUT`
+
+Import your data back via live loader (requires docker)
+
+```
+USAGE
+  $ slash-graphql import-data INPUT
+
+ARGUMENTS
+  INPUT  Input Directory
+
+OPTIONS
+  -e, --endpoint=endpoint  Slash GraphQL Endpoint
+  -t, --token=token        Slash GraphQL Backend API Tokens
+  -y, --confirm            Skip Confirmation
+
+EXAMPLE
+  $ slash-graphql import-data -e https://frozen-mango.cloud.dgraph.io/graphql -t <apiToken> ./import-directory
+```
+
+_See code: [src/commands/import-data.ts](https://github.com/dgraph-io/slash-graphql-cli/blob/v0.1.0/src/commands/import-data.ts)_
 
 ## `slash-graphql update-schema [FILE]`
 
