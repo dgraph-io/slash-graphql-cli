@@ -6,7 +6,7 @@
   "bin": {
     "slash-graphql": "./bin/run"
   },
-  "bugs": "https://github.com/dgraph-io/slash-graphql-cli/issues",
+  "bugs": "https://discuss.dgraph.io/c/issues/slash/41",
   "dependencies": {
     "@oclif/command": "^1.8.0",
     "@oclif/config": "^1.17.0",
