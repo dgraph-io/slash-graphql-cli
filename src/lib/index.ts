@@ -75,7 +75,7 @@ export abstract class BaseCommand extends Command {
     return new Backend(endpoint, token, this.error)
   }
 
-  async writeAuthFile(authFile: string, token: Record<string, any>) {
+  async writeAuthFile(authFile: string, token: AuthConfig) {
     await createDirectory(this.config.configDir)
     await writeFile(join(this.config.configDir, authFile), yaml.stringify(token))
   }
@@ -111,7 +111,7 @@ export abstract class BaseCommand extends Command {
     return await backendsResponse.json() as APIBackend[]
   }
 
-  async readAuthFile(authFile: string): Promise<any> {
+  async readAuthFile(authFile: string): Promise<AuthConfig> {
     const yamlContent = await readFile(join(this.config.configDir, authFile))
     return yaml.parse(yamlContent.toString())
   }
@@ -146,7 +146,7 @@ export abstract class BaseCommand extends Command {
       this.warn('Could not refresh token. Please try logging in again with `slash-graphql login`')
       return null
     }
-    const data = await res.json() as Record<string, any>
+    const data = await res.json() as AuthConfig
     await this.writeAuthFile(authFile, data)
     this.warn('Successfully refreshed token')
     return data.access_token as string

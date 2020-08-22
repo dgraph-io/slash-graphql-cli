@@ -43,8 +43,7 @@ export default class Login extends BaseCommand {
     this.log('Logged In')
   }
 
-  // Lazy programming with the any over here, we really should add types here
-  async pollForToken(apiServer: string, deviceCode: any): Promise<Record<string, any> | undefined> {
+  async pollForToken(apiServer: string, deviceCode: any): Promise<AuthConfig | undefined> {
     // Poll until authorized
     const pollTime = deviceCode.expires_in > 300 ? 300 : deviceCode.expires_in
     const pollUntil = new Date(new Date().getTime() + (pollTime * 1000))
@@ -56,7 +55,8 @@ export default class Login extends BaseCommand {
         body: JSON.stringify({deviceCode: deviceCode.device_code}),
       })
       if (res.status === 200) {
-        return res.json()
+        // eslint-disable-next-line no-await-in-loop
+        return await res.json() as AuthConfig
       }
 
       // eslint-disable-next-line no-await-in-loop
