@@ -1,6 +1,3 @@
-import fetch from 'node-fetch'
-import open = require('open')
-import sleep = require('sleep-promise')
 import {BaseCommand} from '../lib'
 import {getEnvironment} from '../lib/environments'
 

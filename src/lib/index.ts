@@ -86,19 +86,29 @@ export abstract class BaseCommand extends Command {
     if (!token) {
       return null
     }
+
+    const backends = await this.getBackends(apiServer, token)
+
+    if (backends === null) {
+      return null
+    }
+
+    for (const {url, jwtToken} of backends) {
+      if (url === host) {
+        return jwtToken as string
+      }
+    }
+    return null
+  }
+
+  async getBackends(apiServer: string, token: string): Promise<APIBackend[] | null> {
     const backendsResponse = await fetch(`${apiServer}/deployments`, {
       headers: {Authorization: `Bearer ${token}`},
     })
     if (backendsResponse.status !== 200) {
       return null
     }
-    const deployments = await backendsResponse.json()
-    for (const {url, jwtToken} of deployments) {
-      if (url === host) {
-        return jwtToken as string
-      }
-    }
-    return null
+    return await backendsResponse.json() as APIBackend[]
   }
 
   async getAccessToken(apiServer: string, authFile: string, forceRefresh = false) {
