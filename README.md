@@ -19,7 +19,7 @@ $ npm install -g slash-graphql
 $ slash-graphql COMMAND
 running command...
 $ slash-graphql (-v|--version|version)
-slash-graphql/1.5.1 darwin-x64 node-v14.4.0
+slash-graphql/1.6.0 darwin-x64 node-v14.4.0
 $ slash-graphql --help [COMMAND]
 USAGE
   $ slash-graphql COMMAND
@@ -33,7 +33,7 @@ USAGE
 * [`slash-graphql get-schema [FILE]`](#slash-graphql-get-schema-file)
 * [`slash-graphql help [COMMAND]`](#slash-graphql-help-command)
 * [`slash-graphql import-data INPUT`](#slash-graphql-import-data-input)
-* [`slash-graphql login [FILE]`](#slash-graphql-login-file)
+* [`slash-graphql login`](#slash-graphql-login)
 * [`slash-graphql update [CHANNEL]`](#slash-graphql-update-channel)
 * [`slash-graphql update-schema [FILE]`](#slash-graphql-update-schema-file)
 
@@ -55,7 +55,7 @@ EXAMPLE
   $ slash-graphql drop-data -e https://frozen-mango.cloud.dgraph.io/graphql -t <apiToken> schema-file.graphql
 ```
 
-_See code: [src/commands/drop-data.ts](https://github.com/dgraph-io/slash-graphql-cli/blob/v1.5.1/src/commands/drop-data.ts)_
+_See code: [src/commands/drop-data.ts](https://github.com/dgraph-io/slash-graphql-cli/blob/v1.6.0/src/commands/drop-data.ts)_
 
 ## `slash-graphql export-data OUTPUTDIR`
 
@@ -76,7 +76,7 @@ EXAMPLE
   $ slash-graphql export-data -e https://frozen-mango.cloud.dgraph.io/graphql -t <apiToken> ./output-directory
 ```
 
-_See code: [src/commands/export-data.ts](https://github.com/dgraph-io/slash-graphql-cli/blob/v1.5.1/src/commands/export-data.ts)_
+_See code: [src/commands/export-data.ts](https://github.com/dgraph-io/slash-graphql-cli/blob/v1.6.0/src/commands/export-data.ts)_
 
 ## `slash-graphql get-schema [FILE]`
 
@@ -97,7 +97,7 @@ EXAMPLE
   $ slash-graphql get-schema -e https://frozen-mango.cloud.dgraph.io/graphql -t <apiToken>
 ```
 
-_See code: [src/commands/get-schema.ts](https://github.com/dgraph-io/slash-graphql-cli/blob/v1.5.1/src/commands/get-schema.ts)_
+_See code: [src/commands/get-schema.ts](https://github.com/dgraph-io/slash-graphql-cli/blob/v1.6.0/src/commands/get-schema.ts)_
 
 ## `slash-graphql help [COMMAND]`
 
@@ -136,24 +136,21 @@ EXAMPLE
   $ slash-graphql import-data -e https://frozen-mango.cloud.dgraph.io/graphql -t <apiToken> ./import-directory
 ```
 
-_See code: [src/commands/import-data.ts](https://github.com/dgraph-io/slash-graphql-cli/blob/v1.5.1/src/commands/import-data.ts)_
+_See code: [src/commands/import-data.ts](https://github.com/dgraph-io/slash-graphql-cli/blob/v1.6.0/src/commands/import-data.ts)_
 
-## `slash-graphql login [FILE]`
+## `slash-graphql login`
 
 Login to Slash GraphQL. Calling this function will keep you logged in for 24 hours, and you will not need to pass access tokens for any backends that you own
 
 ```
 USAGE
-  $ slash-graphql login [FILE]
-
-ARGUMENTS
-  FILE  [default: /dev/stdin] Input File
+  $ slash-graphql login
 
 EXAMPLE
   $ slash-graphql login
 ```
 
-_See code: [src/commands/login.ts](https://github.com/dgraph-io/slash-graphql-cli/blob/v1.5.1/src/commands/login.ts)_
+_See code: [src/commands/login.ts](https://github.com/dgraph-io/slash-graphql-cli/blob/v1.6.0/src/commands/login.ts)_
 
 ## `slash-graphql update [CHANNEL]`
 
@@ -185,5 +182,5 @@ EXAMPLE
   $ slash-graphql update-schema -e https://frozen-mango.cloud.dgraph.io/graphql -t <apiToken> schema-file.graphql
 ```
 
-_See code: [src/commands/update-schema.ts](https://github.com/dgraph-io/slash-graphql-cli/blob/v1.5.1/src/commands/update-schema.ts)_
+_See code: [src/commands/update-schema.ts](https://github.com/dgraph-io/slash-graphql-cli/blob/v1.6.0/src/commands/update-schema.ts)_
 <!-- commandsstop -->
