@@ -8,9 +8,8 @@ import {getEnvironment} from './environments'
 import {join} from 'path'
 import yaml = require('yaml')
 import fetch from 'node-fetch'
-import {integer} from '@oclif/command/lib/flags'
 
-const {stat, mkdir} = fs.promises
+const {stat, mkdir, unlink} = fs.promises
 
 export async function createDirectory(path: string) {
   try {
@@ -112,10 +111,14 @@ export abstract class BaseCommand extends Command {
     return await backendsResponse.json() as APIBackend[]
   }
 
+  async readAuthFile(authFile: string): Promise<any> {
+    const yamlContent = await readFile(join(this.config.configDir, authFile))
+    return yaml.parse(yamlContent.toString())
+  }
+
   async getAccessToken(apiServer: string, authFile: string, forceRefresh = false) {
     try {
-      const yamlContent = await readFile(join(this.config.configDir, authFile))
-      const {apiTime, access_token, expires_in, refresh_token} = yaml.parse(yamlContent.toString())
+      const {apiTime, access_token, expires_in, refresh_token} = await this.readAuthFile(authFile)
       if (forceRefresh || new Date() > new Date(new Date(apiTime).getTime() + (1000 * expires_in))) {
         return this.tryToRefreshAccessToken(apiServer, authFile, refresh_token)
       }
@@ -123,6 +126,10 @@ export abstract class BaseCommand extends Command {
     } catch {
       return null
     }
+  }
+
+  async deleteAuthFile(authFile: string) {
+    await unlink(join(this.config.configDir, authFile))
   }
 
   async tryToRefreshAccessToken(apiServer: string, authFile: string, refreshToken: string) {
