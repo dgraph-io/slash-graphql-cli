@@ -129,7 +129,7 @@ export abstract class BaseCommand extends Command {
       return null
     }
     const data = await res.json() as Record<string, any>
-    this.writeAuthFile(authFile, data)
+    await this.writeAuthFile(authFile, data)
     this.warn('Successfully refreshed token')
     return data.access_token as string
   }
