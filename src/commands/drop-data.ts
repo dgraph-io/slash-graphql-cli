@@ -44,7 +44,7 @@ export default class DropData extends BaseCommand {
       for (const {message} of errors) {
         this.error(message)
       }
-      throw new Error('Could not drop data')
+      return
     }
     this.log('Sucessfully dropped all data!')
   }

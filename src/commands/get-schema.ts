@@ -28,7 +28,7 @@ export default class GetSchema extends BaseCommand {
       for (const {message} of errors) {
         this.error(message)
       }
-      throw new Error('Could not fetch schema')
+      return
     }
     await writeFile(opts.args.file, data.getGQLSchema.schema)
   }

@@ -10,9 +10,12 @@ export class Backend {
 
   private token: string;
 
-  constructor(e: string, t: string) {
+  private error: (s: string) => never
+
+  constructor(e: string, t: string, el: (s: string) => never) {
     this.endpointOrigin = new URL(e).origin
     this.token = t
+    this.error = el
   }
 
   private async doGraphQLQuery<T>(query: string, variables = {}, {endpoint = '/admin'} = {}): Promise<GraphQLResponse<T>> {
@@ -26,7 +29,7 @@ export class Backend {
       body: JSON.stringify({query, variables}),
     })
     if (response.status !== 200) {
-      throw new Error('Could not connect to your slash backend. Did you pass in the correct api token?')
+      this.error('Could not connect to your Slash GraphQL backend. Your credentials may be invalid')
     }
     const json = await response.json()
     return {

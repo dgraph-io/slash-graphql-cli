@@ -25,7 +25,8 @@ export default class Login extends BaseCommand {
       body: JSON.stringify({}),
     })
     if (deviceCodeResponse.status !== 200) {
-      throw new Error('Could not get device code from Auth0')
+      this.error('Could not get device code from Auth0')
+      return
     }
     const deviceCode = await deviceCodeResponse.json()
     open(deviceCode.verification_uri_complete)

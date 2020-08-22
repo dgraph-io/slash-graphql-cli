@@ -64,16 +64,16 @@ export abstract class BaseCommand extends Command {
   // Async so that we can eventually implement logic, and automatically get tokens
   async backendFromOpts(opts: Output<{ endpoint: string | undefined; token: string | undefined; environment: string }, any>): Promise<Backend> {
     if (opts.flags.endpoint && opts.flags.token) {
-      return new Backend(opts.flags.endpoint, opts.flags.token)
+      return new Backend(opts.flags.endpoint, opts.flags.token, this.error)
     }
     if (opts.flags.endpoint) {
       const {apiServer, authFile} = getEnvironment(opts.flags.environment)
       const token = await this.getEndpointJWTToken(apiServer, authFile, opts.flags.endpoint)
       if (token) {
-        return new Backend(opts.flags.endpoint, token)
+        return new Backend(opts.flags.endpoint, token, this.error)
       }
     }
-    throw new Error('Please pass an endpoint and api token')
+    this.error('Please pass an endpoint and api token')
   }
 
   async writeAuthFile(authFile: string, token: Record<string, any>) {

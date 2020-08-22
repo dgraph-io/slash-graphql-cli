@@ -53,7 +53,7 @@ export default class ExportData extends BaseCommand {
       for (const {message} of errors) {
         this.error(message)
       }
-      throw new Error('Could not export data')
+      return
     }
     const urls = data.export.signedUrls
     const stepIncrement = 67 / (urls.length || 1)
@@ -61,7 +61,8 @@ export default class ExportData extends BaseCommand {
       // eslint-disable-next-line no-await-in-loop
       const res = await fetch(url)
       if (res.status !== 200 || !res.body) {
-        throw new Error('Unable to download file')
+        this.error('Unable to download file')
+        return
       }
       res.body.pipe(createWriteStream(join(outputDir, getFileName(url))))
       progressBar && progressBar.increment(stepIncrement)

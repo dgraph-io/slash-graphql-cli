@@ -17,7 +17,7 @@ export default class CreateBackend extends BaseCommand {
     subdomain: flags.string({char: 'r', description: 'Region'}),
   }
 
-  static args = [{name: 'name', description: 'Backend Name'}]
+  static args = [{name: 'name', description: 'Backend Name', required: true}]
 
   async run() {
     const opts = this.parse(CreateBackend)

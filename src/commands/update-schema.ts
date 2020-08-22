@@ -35,7 +35,7 @@ export default class UpdateSchema extends BaseCommand {
       for (const {message} of errors) {
         this.error(message)
       }
-      throw new Error('Could not update schema')
+      return
     }
     if (!opts.flags.quiet) {
       this.log('Sucessfully updated schema!')
