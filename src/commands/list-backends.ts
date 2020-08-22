@@ -7,6 +7,7 @@ export default class ListBackends extends BaseCommand {
 
   static examples = [
     '$ slash-graphql list-backends',
+    '$ slash-graphql list-backends --csv',
   ]
 
   static flags = {

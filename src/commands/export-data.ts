@@ -33,16 +33,20 @@ export default class ExportData extends BaseCommand {
 
     await createDirectory(outputDir)
 
-    this.log('Exporting Data, this might take a few minutes')
-    const progressBar = cli.progress({
-      format: '{step} [{bar}] {percentage}%',
-    })
-    progressBar.start()
-    progressBar.update(10, {
+    if (!opts.flags.quiet) {
+      this.log('Exporting Data, this might take a few minutes')
+    }
+    const progressBar = opts.flags.quiet ?
+      null :
+      cli.progress({
+        format: '{step} [{bar}] {percentage}%',
+      })
+    progressBar && progressBar.start()
+    progressBar && progressBar.update(10, {
       step: 'Exporting',
     })
     const {errors, data} = await backend.slashAdminQuery<{ export: { signedUrls: string[] } }>(QUERY)
-    progressBar.update(33, {
+    progressBar && progressBar.update(33, {
       step: 'Downloading',
     })
     if (errors) {
@@ -60,9 +64,9 @@ export default class ExportData extends BaseCommand {
         throw new Error('Unable to download file')
       }
       res.body.pipe(createWriteStream(join(outputDir, getFileName(url))))
-      progressBar.increment(stepIncrement)
+      progressBar && progressBar.increment(stepIncrement)
     }
-    progressBar.update(100, {step: 'Success'})
-    progressBar.stop()
+    progressBar && progressBar.update(100, {step: 'Success'})
+    progressBar && progressBar.stop()
   }
 }

@@ -20,7 +20,9 @@ export default class RefreshLogin extends BaseCommand {
 
     const token = await this.getAccessToken(apiServer, authFile, true)
     if (token) {
-      this.log(`Got a new token: ${token}`)
+      if (!opts.flags.quiet) {
+        this.log(`Got a new token: ${token}`)
+      }
     } else {
       this.warn('Could not get a new token. Please run `slash-graphql login`')
     }

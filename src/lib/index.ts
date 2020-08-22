@@ -52,6 +52,7 @@ export async function readFile(path: string): Promise<Buffer> {
 
 export abstract class BaseCommand extends Command {
   static commonFlags = {
+    quiet: flags.boolean({char: 'q', description: 'Quiet Output', default: false}),
     environment: flags.string({description: 'Environment', default: 'prod', hidden: true}),
   }
 
