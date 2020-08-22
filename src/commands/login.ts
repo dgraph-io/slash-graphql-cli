@@ -40,7 +40,7 @@ export default class Login extends BaseCommand {
 
     this.writeAuthFile(authFile, token)
 
-    this.log('Logged In!')
+    this.log('Logged In')
   }
 
   // Lazy programming with the any over here, we really should add types here

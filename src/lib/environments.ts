@@ -10,5 +10,5 @@ const environments = {
 }
 
 export function getEnvironment(env: string) {
-  return env === 'stg' ? environments.stg : environments.prod
+  return env === 'stg' || env === 'staging' ? environments.stg : environments.prod
 }

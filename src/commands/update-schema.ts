@@ -38,7 +38,7 @@ export default class UpdateSchema extends BaseCommand {
       return
     }
     if (!opts.flags.quiet) {
-      this.log('Sucessfully updated schema!')
+      this.log('Sucessfully updated schema')
     }
   }
 }
