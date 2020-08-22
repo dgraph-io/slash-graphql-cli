@@ -1,9 +1,7 @@
 import fetch from 'node-fetch'
 import open = require('open')
 import sleep = require('sleep-promise')
-import {stringify} from 'yaml'
-import {createDirectory, writeFile, BaseCommand} from '../lib'
-import {join} from 'path'
+import {BaseCommand} from '../lib'
 import {getEnvironment} from '../lib/environments'
 
 export default class Login extends BaseCommand {
@@ -17,16 +15,14 @@ export default class Login extends BaseCommand {
     ...BaseCommand.commonFlags,
   }
 
-  static args = [{name: 'file', description: 'Input File', default: '/dev/stdin'}]
-
   async run() {
     const opts = this.parse(Login)
-    const {auth0domain, auth0clientId, audience, authFile} = getEnvironment(opts.flags.environment)
+    const {apiServer, authFile} = getEnvironment(opts.flags.environment)
 
-    const deviceCodeResponse = await fetch(`https://${auth0domain}/oauth/device/code`, {
+    const deviceCodeResponse = await fetch(`${apiServer}/command-line/device-code`, {
       method: 'POST',
       headers: {'content-type': 'application/json'},
-      body: JSON.stringify({client_id: auth0clientId, scope: 'offline_access', audience: audience}),
+      body: JSON.stringify({}),
     })
     if (deviceCodeResponse.status !== 200) {
       throw new Error('Could not get device code from Auth0')
@@ -35,38 +31,31 @@ export default class Login extends BaseCommand {
     open(deviceCode.verification_uri_complete)
     this.log('You should see the following code in your browser:', deviceCode.user_code)
 
-    const token = await this.pollForToken(auth0domain, auth0clientId, deviceCode)
+    const token = await this.pollForToken(apiServer, deviceCode)
     if (!token) {
       this.error('Was not able to get confirmation in time. Please try logging in again')
       return
     }
 
-    await createDirectory(this.config.configDir)
-    await writeFile(join(this.config.configDir, authFile), stringify(token))
+    this.writeAuthFile(authFile, token)
 
     this.log('Logged In!')
   }
 
-  // Lazy programming with the any over here
-  async pollForToken(auth0domain: string, auth0ClientId: string, deviceCode: any): Promise<any | undefined> {
+  // Lazy programming with the any over here, we really should add types here
+  async pollForToken(apiServer: string, deviceCode: any): Promise<Record<string, any> | undefined> {
     // Poll until authorized
     const pollTime = deviceCode.expires_in > 300 ? 300 : deviceCode.expires_in
     const pollUntil = new Date(new Date().getTime() + (pollTime * 1000))
     while (new Date() < pollUntil) {
-      const apiTime = new Date()
       // eslint-disable-next-line no-await-in-loop
-      const res = await fetch(`https://${auth0domain}/oauth/token`, {
+      const res = await fetch(`${apiServer}/command-line/access-token`, {
         method: 'POST',
         headers: {'content-type': 'application/json'},
-        body: JSON.stringify({
-          grant_type: 'urn:ietf:params:oauth:grant-type:device_code',
-          device_code: deviceCode.device_code,
-          client_id: auth0ClientId,
-        }),
+        body: JSON.stringify({deviceCode: deviceCode.device_code}),
       })
       if (res.status === 200) {
-        // eslint-disable-next-line no-await-in-loop
-        return {apiTime, ...(await res.json())}
+        return res.json()
       }
 
       // eslint-disable-next-line no-await-in-loop

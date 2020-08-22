@@ -75,9 +75,14 @@ export abstract class BaseCommand extends Command {
     throw new Error('Please pass an endpoint and api token')
   }
 
+  async writeAuthFile(authFile: string, token: Record<string, any>) {
+    await createDirectory(this.config.configDir)
+    await writeFile(join(this.config.configDir, authFile), yaml.stringify(token))
+  }
+
   async getEndpointJWTToken(apiServer: string, authFile: string, endpoint: string) {
     const host = new URL(endpoint).host
-    const token = await this.getAccessToken(authFile)
+    const token = await this.getAccessToken(apiServer, authFile)
     if (!token) {
       return null
     }
@@ -96,17 +101,36 @@ export abstract class BaseCommand extends Command {
     return null
   }
 
-  async getAccessToken(authFile: string) {
+  async getAccessToken(apiServer: string, authFile: string, forceRefresh = false) {
     try {
       const yamlContent = await readFile(join(this.config.configDir, authFile))
-      const {apiTime, access_token, expires_in} = yaml.parse(yamlContent.toString())
-      if (new Date() > new Date(new Date(apiTime).getTime() + (1000 * expires_in))) {
-        this.warn('Access Token Expired')
-        return null
+      const {apiTime, access_token, expires_in, refresh_token} = yaml.parse(yamlContent.toString())
+      if (forceRefresh || new Date() > new Date(new Date(apiTime).getTime() + (1000 * expires_in))) {
+        return this.tryToRefreshAccessToken(apiServer, authFile, refresh_token)
       }
       return access_token as string
     } catch {
       return null
     }
+  }
+
+  async tryToRefreshAccessToken(apiServer: string, authFile: string, refreshToken: string) {
+    if (!refreshToken) {
+      return null
+    }
+    this.warn('Attempting to refresh token')
+    const res = await fetch(`${apiServer}/command-line/access-token/refresh`, {
+      method: 'POST',
+      headers: {'content-type': 'application/json'},
+      body: JSON.stringify({refreshToken}),
+    })
+    if (res.status !== 200) {
+      this.warn('Could not refresh token. Please try logging in again with `slash-graphql login`')
+      return null
+    }
+    const data = await res.json() as Record<string, any>
+    this.writeAuthFile(authFile, data)
+    this.warn('Successfully refreshed token')
+    return data.access_token as string
   }
 }
