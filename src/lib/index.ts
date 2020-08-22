@@ -8,6 +8,7 @@ import {getEnvironment} from './environments'
 import {join} from 'path'
 import yaml = require('yaml')
 import fetch from 'node-fetch'
+import {integer} from '@oclif/command/lib/flags'
 
 const {stat, mkdir} = fs.promises
 
@@ -61,19 +62,18 @@ export abstract class BaseCommand extends Command {
     token: flags.string({char: 't', description: 'Slash GraphQL Backend API Tokens'}),
   }
 
-  // Async so that we can eventually implement logic, and automatically get tokens
   async backendFromOpts(opts: Output<{ endpoint: string | undefined; token: string | undefined; environment: string }, any>): Promise<Backend> {
-    if (opts.flags.endpoint && opts.flags.token) {
-      return new Backend(opts.flags.endpoint, opts.flags.token, this.error)
+    const {apiServer, authFile} = getEnvironment(opts.flags.environment)
+    const endpoint = await this.convertToGraphQLEndpoint(apiServer, authFile, opts.flags.endpoint)
+    if (!endpoint) {
+      this.error('Please pass an endpoint or cluster id with the -e flag')
     }
-    if (opts.flags.endpoint) {
-      const {apiServer, authFile} = getEnvironment(opts.flags.environment)
-      const token = await this.getEndpointJWTToken(apiServer, authFile, opts.flags.endpoint)
-      if (token) {
-        return new Backend(opts.flags.endpoint, token, this.error)
-      }
+    const token = opts.flags.token || await this.getEndpointJWTToken(apiServer, authFile, endpoint)
+    if (!token) {
+      this.error('Please login with `slash-graphql login` or pass a token with the -t flag')
     }
-    this.error('Please pass an endpoint and api token')
+
+    return new Backend(endpoint, token, this.error)
   }
 
   async writeAuthFile(authFile: string, token: Record<string, any>) {
@@ -143,5 +143,36 @@ export abstract class BaseCommand extends Command {
     await this.writeAuthFile(authFile, data)
     this.warn('Successfully refreshed token')
     return data.access_token as string
+  }
+
+  async findBackendByUid(apiServer: string, token: string, uid: string) {
+    const backends = await this.getBackends(apiServer, token)
+    if (!backends) {
+      this.error('Please login with `slash-graphql login`')
+    }
+    return backends.find(backend => backend.uid === uid) || null
+  }
+
+  async convertToGraphQLEndpoint(apiServer: string, authFile: string, endpoint: string | undefined): Promise<string | null> {
+    if (!endpoint) {
+      return null
+    }
+
+    // Return unless we get a UID
+    if (!endpoint.match(/0x[0-9a-f]+/)) {
+      return endpoint
+    }
+
+    const token = await this.getAccessToken(apiServer, authFile)
+    if (!token) {
+      this.error('Please login with `slash-graphql login` in order to access endpoints by id')
+    }
+
+    const backend = await this.findBackendByUid(apiServer, token, endpoint)
+    if (!backend) {
+      this.error(`Cannot find backend ${endpoint}`)
+    }
+
+    return `https://${backend.url}/graphql`
   }
 }
