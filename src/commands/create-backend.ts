@@ -13,7 +13,7 @@ export default class CreateBackend extends BaseCommand {
 
   static flags = {
     ...BaseCommand.commonFlags,
-    region: flags.string({char: 'r', description: 'Region', default: 'us-west-1'}),
+    region: flags.string({char: 'r', description: 'Region', default: 'us-west-2'}),
     subdomain: flags.string({char: 's', description: 'Subdomain'}),
   }
 
