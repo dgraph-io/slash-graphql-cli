@@ -1,5 +1,4 @@
-slash-graphql
-=============
+# slash-graphql
 
 Manage Slash GraphQL from the comfort of your command line!
 
@@ -8,11 +7,15 @@ Manage Slash GraphQL from the comfort of your command line!
 [![License](https://img.shields.io/npm/l/slash-graphql.svg)](https://github.com/dgraph-io/slash-graphql-cli/blob/master/package.json)
 
 <!-- toc -->
-* [Usage](#usage)
-* [Commands](#commands)
+
+- [Usage](#usage)
+- [Commands](#commands)
 <!-- tocstop -->
+
 # Usage
+
 <!-- usage -->
+
 ```sh-session
 $ npm install -g slash-graphql
 $ slash-graphql COMMAND
@@ -24,22 +27,28 @@ USAGE
   $ slash-graphql COMMAND
 ...
 ```
+
 <!-- usagestop -->
+
 # Commands
+
 <!-- commands -->
-* [`slash-graphql deploy-backend NAME`](#slash-graphql-deploy-backend-name)
-* [`slash-graphql destroy-backend ID`](#slash-graphql-destroy-backend-id)
-* [`slash-graphql drop-data`](#slash-graphql-drop-data)
-* [`slash-graphql export-data OUTPUTDIR`](#slash-graphql-export-data-outputdir)
-* [`slash-graphql get-schema [FILE]`](#slash-graphql-get-schema-file)
-* [`slash-graphql help [COMMAND]`](#slash-graphql-help-command)
-* [`slash-graphql import-data INPUT`](#slash-graphql-import-data-input)
-* [`slash-graphql list-backends`](#slash-graphql-list-backends)
-* [`slash-graphql login`](#slash-graphql-login)
-* [`slash-graphql logout`](#slash-graphql-logout)
-* [`slash-graphql update [CHANNEL]`](#slash-graphql-update-channel)
-* [`slash-graphql update-backend ID`](#slash-graphql-update-backend-id)
-* [`slash-graphql update-schema [FILE]`](#slash-graphql-update-schema-file)
+
+- [`slash-graphql deploy-backend NAME`](#slash-graphql-deploy-backend-name)
+- [`slash-graphql destroy-backend ID`](#slash-graphql-destroy-backend-id)
+- [`slash-graphql drop-data`](#slash-graphql-drop-data)
+- [`slash-graphql export-data OUTPUTDIR`](#slash-graphql-export-data-outputdir)
+- [`slash-graphql get-schema [FILE]`](#slash-graphql-get-schema-file)
+- [`slash-graphql help [COMMAND]`](#slash-graphql-help-command)
+- [`slash-graphql import-data INPUT`](#slash-graphql-import-data-input)
+- [`slash-graphql list-backends`](#slash-graphql-list-backends)
+- [`slash-graphql login`](#slash-graphql-login)
+- [`slash-graphql logout`](#slash-graphql-logout)
+- [`slash-graphql restore-backend`](#slash-graphql-restore-backend)
+- [`slash-graphql restore-backend-status`](#slash-graphql-restore-backend-status)
+- [`slash-graphql update [CHANNEL]`](#slash-graphql-update-channel)
+- [`slash-graphql update-backend ID`](#slash-graphql-update-backend-id)
+- [`slash-graphql update-schema [FILE]`](#slash-graphql-update-schema-file)
 
 ## `slash-graphql deploy-backend NAME`
 
@@ -312,4 +321,54 @@ EXAMPLE
 ```
 
 _See code: [src/commands/update-schema.ts](https://github.com/dgraph-io/slash-graphql-cli/blob/v1.9.6/src/commands/update-schema.ts)_
+
+## `slash-graphql restore-backend`
+
+Restore data of a backend into an existing backend. The destination database will be completely destroyed before restoring.
+Restoring is an asyncronous operation. Use the key returned from the result to check the restore status.
+
+```
+USAGE
+  $ slash-graphql restore-backend
+
+OPTIONS
+  -e, --endpoint=endpoint  Slash GraphQL Endpoint
+  -q, --quiet              Quiet Output
+  -t, --token=token        Slash GraphQL Backend API Tokens
+  -s, --source             Source Slash GraphQL Backend ID or URL to restore from
+
+EXAMPLE
+  '$ slash-graphql restore-backend -e https://clone.cloud.dgraph.io/graphql -t <apiToken> -s <source backend id or url>',
+
+```
+
+_See code: [src/commands/restore-backend.ts](https://github.com/dgraph-io/slash-graphql-cli/blob/v1.9.6/src/commands/restore-backend.ts)_
+
+## `slash-graphql restore-backend-status`
+
+Use this command to get the restore status after using the `restore-backend` command. The status could be one of the following.
+`OK` - Restore completed successfully.
+`In_PROGRESS` - Restore is in progress. Check again after sometime.
+`ERROR` - Failed to complete restore. Retry or contact us if the issue persists.
+`UNKNOWN` - Mostly due to invalid restore ID. Retry or contact us if the issue persists.
+
+```
+USAGE
+  $ slash-graphql restore-backend-status RESTOREID
+
+ARGUMENTS
+  RESTOREID returned id from the `restore-backend` command
+
+OPTIONS
+  -e, --endpoint=endpoint  Slash GraphQL Endpoint
+  -q, --quiet              Quiet Output
+  -t, --token=token        Slash GraphQL Backend API Tokens
+
+EXAMPLE
+  '$ slash-graphql restore-backend-status -e https://clone.cloud.dgraph.io/graphql -t <apiToken> RESTOREID',
+
+```
+
+_See code: [src/commands/restore-backend-status.ts](https://github.com/dgraph-io/slash-graphql-cli/blob/v1.9.6/src/commands/restore-backend-status.ts)_
+
 <!-- commandsstop -->
