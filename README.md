@@ -18,7 +18,7 @@ $ npm install -g slash-graphql
 $ slash-graphql COMMAND
 running command...
 $ slash-graphql (-v|--version|version)
-slash-graphql/1.9.3 darwin-x64 node-v14.4.0
+slash-graphql/1.9.4 darwin-x64 node-v14.4.0
 $ slash-graphql --help [COMMAND]
 USAGE
   $ slash-graphql COMMAND
@@ -38,6 +38,7 @@ USAGE
 * [`slash-graphql login`](#slash-graphql-login)
 * [`slash-graphql logout`](#slash-graphql-logout)
 * [`slash-graphql update [CHANNEL]`](#slash-graphql-update-channel)
+* [`slash-graphql update-backend ID`](#slash-graphql-update-backend-id)
 * [`slash-graphql update-schema [FILE]`](#slash-graphql-update-schema-file)
 
 ## `slash-graphql create-backend NAME`
@@ -60,7 +61,7 @@ EXAMPLE
   $ slash-graphql create-backend "My New Backend"
 ```
 
-_See code: [src/commands/create-backend.ts](https://github.com/dgraph-io/slash-graphql-cli/blob/v1.9.3/src/commands/create-backend.ts)_
+_See code: [src/commands/create-backend.ts](https://github.com/dgraph-io/slash-graphql-cli/blob/v1.9.4/src/commands/create-backend.ts)_
 
 ## `slash-graphql destroy-backend ID`
 
@@ -81,7 +82,7 @@ EXAMPLE
   $ slash-graphql destroy-backend "0xid"
 ```
 
-_See code: [src/commands/destroy-backend.ts](https://github.com/dgraph-io/slash-graphql-cli/blob/v1.9.3/src/commands/destroy-backend.ts)_
+_See code: [src/commands/destroy-backend.ts](https://github.com/dgraph-io/slash-graphql-cli/blob/v1.9.4/src/commands/destroy-backend.ts)_
 
 ## `slash-graphql drop-data`
 
@@ -102,7 +103,7 @@ EXAMPLE
   $ slash-graphql drop-data -e https://frozen-mango.cloud.dgraph.io/graphql -t <apiToken> schema-file.graphql
 ```
 
-_See code: [src/commands/drop-data.ts](https://github.com/dgraph-io/slash-graphql-cli/blob/v1.9.3/src/commands/drop-data.ts)_
+_See code: [src/commands/drop-data.ts](https://github.com/dgraph-io/slash-graphql-cli/blob/v1.9.4/src/commands/drop-data.ts)_
 
 ## `slash-graphql export-data OUTPUTDIR`
 
@@ -124,7 +125,7 @@ EXAMPLE
   $ slash-graphql export-data -e https://frozen-mango.cloud.dgraph.io/graphql -t <apiToken> ./output-directory
 ```
 
-_See code: [src/commands/export-data.ts](https://github.com/dgraph-io/slash-graphql-cli/blob/v1.9.3/src/commands/export-data.ts)_
+_See code: [src/commands/export-data.ts](https://github.com/dgraph-io/slash-graphql-cli/blob/v1.9.4/src/commands/export-data.ts)_
 
 ## `slash-graphql get-schema [FILE]`
 
@@ -149,7 +150,7 @@ EXAMPLES
   $ slash-graphql get-schema -e https://frozen-mango.cloud.dgraph.io/graphql -t <apiToken> -g
 ```
 
-_See code: [src/commands/get-schema.ts](https://github.com/dgraph-io/slash-graphql-cli/blob/v1.9.3/src/commands/get-schema.ts)_
+_See code: [src/commands/get-schema.ts](https://github.com/dgraph-io/slash-graphql-cli/blob/v1.9.4/src/commands/get-schema.ts)_
 
 ## `slash-graphql help [COMMAND]`
 
@@ -189,7 +190,7 @@ EXAMPLE
   $ slash-graphql import-data -e https://frozen-mango.cloud.dgraph.io/graphql -t <apiToken> ./import-directory
 ```
 
-_See code: [src/commands/import-data.ts](https://github.com/dgraph-io/slash-graphql-cli/blob/v1.9.3/src/commands/import-data.ts)_
+_See code: [src/commands/import-data.ts](https://github.com/dgraph-io/slash-graphql-cli/blob/v1.9.4/src/commands/import-data.ts)_
 
 ## `slash-graphql list-backends`
 
@@ -215,7 +216,7 @@ EXAMPLES
   $ slash-graphql list-backends --csv
 ```
 
-_See code: [src/commands/list-backends.ts](https://github.com/dgraph-io/slash-graphql-cli/blob/v1.9.3/src/commands/list-backends.ts)_
+_See code: [src/commands/list-backends.ts](https://github.com/dgraph-io/slash-graphql-cli/blob/v1.9.4/src/commands/list-backends.ts)_
 
 ## `slash-graphql login`
 
@@ -232,7 +233,7 @@ EXAMPLE
   $ slash-graphql login
 ```
 
-_See code: [src/commands/login.ts](https://github.com/dgraph-io/slash-graphql-cli/blob/v1.9.3/src/commands/login.ts)_
+_See code: [src/commands/login.ts](https://github.com/dgraph-io/slash-graphql-cli/blob/v1.9.4/src/commands/login.ts)_
 
 ## `slash-graphql logout`
 
@@ -251,7 +252,7 @@ EXAMPLES
   $ slash-graphql logout -a
 ```
 
-_See code: [src/commands/logout.ts](https://github.com/dgraph-io/slash-graphql-cli/blob/v1.9.3/src/commands/logout.ts)_
+_See code: [src/commands/logout.ts](https://github.com/dgraph-io/slash-graphql-cli/blob/v1.9.4/src/commands/logout.ts)_
 
 ## `slash-graphql update [CHANNEL]`
 
@@ -263,6 +264,28 @@ USAGE
 ```
 
 _See code: [@oclif/plugin-update](https://github.com/oclif/plugin-update/blob/v1.3.10/src/commands/update.ts)_
+
+## `slash-graphql update-backend ID`
+
+Update Backend
+
+```
+USAGE
+  $ slash-graphql update-backend ID
+
+ARGUMENTS
+  ID  Backend UID
+
+OPTIONS
+  -n, --name=name  Name
+  -q, --quiet      Quiet Output
+  -y, --confirm    Skip Confirmation
+
+EXAMPLE
+  $ slash-graphql update-backend -n "New Name" 0xid
+```
+
+_See code: [src/commands/update-backend.ts](https://github.com/dgraph-io/slash-graphql-cli/blob/v1.9.4/src/commands/update-backend.ts)_
 
 ## `slash-graphql update-schema [FILE]`
 
@@ -284,5 +307,5 @@ EXAMPLE
   $ slash-graphql update-schema -e https://frozen-mango.cloud.dgraph.io/graphql -t <apiToken> schema-file.graphql
 ```
 
-_See code: [src/commands/update-schema.ts](https://github.com/dgraph-io/slash-graphql-cli/blob/v1.9.3/src/commands/update-schema.ts)_
+_See code: [src/commands/update-schema.ts](https://github.com/dgraph-io/slash-graphql-cli/blob/v1.9.4/src/commands/update-schema.ts)_
 <!-- commandsstop -->
