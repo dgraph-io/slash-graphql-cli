@@ -11,7 +11,7 @@ export default class DeployBackend extends BaseCommand {
     '$ slash-graphql deploy-backend "My New Backend"',
   ]
 
-  static aliases = ['create-backend']
+  static aliases = ['create-backend', 'launch-backend']
 
   static flags = {
     ...BaseCommand.commonFlags,
