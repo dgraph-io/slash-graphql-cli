@@ -4,12 +4,14 @@ import {flags} from '@oclif/command'
 import fetch from 'node-fetch'
 import sleep = require('sleep-promise')
 
-export default class CreateBackend extends BaseCommand {
-  static description = 'Create a new Backend'
+export default class DeployBackend extends BaseCommand {
+  static description = 'Launch a new Backend'
 
   static examples = [
-    '$ slash-graphql create-backend "My New Backend"',
+    '$ slash-graphql deploy-backend "My New Backend"',
   ]
+
+  static aliases = ['create-backend']
 
   static flags = {
     ...BaseCommand.commonFlags,
@@ -20,7 +22,7 @@ export default class CreateBackend extends BaseCommand {
   static args = [{name: 'name', description: 'Backend Name', required: true}]
 
   async run() {
-    const opts = this.parse(CreateBackend)
+    const opts = this.parse(DeployBackend)
     const {apiServer, authFile} = getEnvironment(opts.flags.environment)
 
     const token = await this.getAccessToken(apiServer, authFile)
