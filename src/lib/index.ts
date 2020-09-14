@@ -160,6 +160,15 @@ export abstract class BaseCommand extends Command {
     return backends.find(backend => backend.uid === uid) || null
   }
 
+  async findBackendByUrl(apiServer: string, token: string, url: string) {
+    const hotname = new URL(url).host
+    const backends = await this.getBackends(apiServer, token)
+    if (!backends) {
+      this.error('Please login with `slash-graphql login`')
+    }
+    return backends.find(backend => backend.url === hotname) || null
+  }
+
   async convertToGraphQLEndpoint(apiServer: string, authFile: string, endpoint: string | undefined): Promise<string | null> {
     if (!endpoint) {
       return null
@@ -181,5 +190,28 @@ export abstract class BaseCommand extends Command {
     }
 
     return `https://${backend.url}/graphql`
+  }
+
+  async convertToGraphQLUid(apiServer: string, authFile: string, endpoint: string | undefined): Promise<string | null> {
+    if (!endpoint) {
+      return null
+    }
+
+    // Return unless we get a URL
+    if (endpoint.match(/0x[0-9a-f]+/)) {
+      return endpoint
+    }
+
+    const token = await this.getAccessToken(apiServer, authFile)
+    if (!token) {
+      this.error('Please login with `slash-graphql login` in order to access endpoints by url')
+    }
+
+    const backend = await this.findBackendByUrl(apiServer, token, endpoint)
+    if (!backend) {
+      this.error(`Cannot find backend ${endpoint}`)
+    }
+
+    return backend.uid
   }
 }
