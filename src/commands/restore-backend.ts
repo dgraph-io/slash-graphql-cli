@@ -13,8 +13,6 @@ mutation($uid: String!) {
 export default class RestoreBackend extends BaseCommand {
     static description = 'Restore into a backend by source backend ID'
 
-    static hidden = true;
-
     static examples = [
       '$ slash-graphql restore-backend -e https://clone.cloud.dgraph.io/graphql -t <apiToken> --source <source backend id or url>',
     ]

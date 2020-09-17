@@ -11,8 +11,6 @@ query($restoreId: Int!) {
 export default class RestoreBackendStatus extends BaseCommand {
     static description = 'Retrieve the status of a restore operation'
 
-    static hidden = true;
-
     static examples = [
       '$ slash-graphql restore-backend-status -e https://clone.cloud.dgraph.io/graphql -t <apiToken> "restoreID"',
     ]
