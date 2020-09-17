@@ -58,7 +58,7 @@ export default class RestoreBackend extends BaseCommand {
       const restoreId = data.restore.response.restoreId
 
       if (opts.flags.quiet) {
-        this.log(restoreId)
+        this.log('Restore key: ' + restoreId)
       } else {
         this.log('Restore in progress. Please run "slash-graphql restore-backend-status" to fetch the current status, using the following key ', restoreId)
       }

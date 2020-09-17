@@ -39,7 +39,7 @@ export default class RestoreBackendStatus extends BaseCommand {
 
       const failures = data.restoreStatus.response.errors
       if (failures.length !== 0) {
-        this.error(failures)
+        this.error(JSON.stringify(failures))
         return
       }
 
