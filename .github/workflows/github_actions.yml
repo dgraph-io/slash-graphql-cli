@@ -3,9 +3,8 @@ on:
     # Sequence of patterns matched against refs/tags
     tags:
       - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
-    branches: [master]
-
-name: Create Release
+    branches:
+      master
 
 jobs:
   build:
@@ -21,19 +20,25 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
         with:
           tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
+          release_name: v ${{ github.ref }}
           draft: false
           prerelease: false
-    build:
-      name: Publishing to NPM
-      runs-on: ubuntu-latest
-      steps:
-        - uses: actions/checkout@v1
-        - uses: actions/setup-node@v1
-          with:
-            node-version: 12
-            registry-url: https://registry.npmjs.org/
-        - run: yarn install
-        - run: npm publish --access public
-          env:
-            NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+  build:
+    name: Publishing to NPM
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 12
+          registry-url: https://registry.npmjs.org/
+      - run: yarn install
+      - run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+  build:
+    name: Creating a oclif binary and uploading to S3
+    runs-on: ubuntu-latest
+    steps:
+      - run: oclif-dev publish
+
