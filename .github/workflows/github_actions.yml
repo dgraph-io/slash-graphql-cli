@@ -20,12 +20,6 @@ jobs:
           release_name: v ${{ github.ref }}
           draft: false
           prerelease: false
-  build-win:
-    runs-on: window-latest
-    steps:
-      - name: Checkout
-      - uses: actions/checkout@v2
-
   build:
     name: Publishing to NPM
     runs-on: ubuntu-latest
