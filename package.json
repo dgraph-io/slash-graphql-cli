@@ -64,7 +64,7 @@
     },
     "update": {
       "s3": {
-        "bucket": "<insert_bucket_name>"
+        "bucket": "slashgraphql-cli"
       }
     }
   },
