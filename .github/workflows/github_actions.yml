@@ -45,7 +45,10 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: oclif-dev pack
+      - uses: actions/checkout@v2
       - run: oclif-dev pack:win
+      - uses: actions/checkout@v2
       - run: oclif-dev pack:macos
+      - uses: actions/checkout@v2
       - run: oclif-dev publish
 
