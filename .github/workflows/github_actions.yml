@@ -43,6 +43,7 @@ jobs:
     name: Creating a oclif binary and uploading to S3
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
       - run: oclif-dev pack
       - run: oclif-dev pack:win
       - run: oclif-dev pack:macos
