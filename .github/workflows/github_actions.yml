@@ -20,11 +20,17 @@ jobs:
           release_name: v ${{ github.ref }}
           draft: false
           prerelease: false
+  build-win:
+    runs-on: window-latest
+    steps:
+      - name: Checkout
+      - uses: actions/checkout@v2
+
   build:
     name: Publishing to NPM
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
         with:
           node-version: 12
@@ -37,5 +43,8 @@ jobs:
     name: Creating a oclif binary and uploading to S3
     runs-on: ubuntu-latest
     steps:
+      - run: oclif-dev pack
+      - run: oclif-dev pack:win
+      - run: oclif-dev pack:macos
       - run: oclif-dev publish
 
