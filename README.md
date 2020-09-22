@@ -111,14 +111,18 @@ OPTIONS
   -q, --quiet              Quiet Output
   -t, --token=token        Slash GraphQL Backend API Tokens
   -y, --confirm            Skip Confirmation
-  -d, --drop-data          Drop Data without the schema
-  -s, --drop-schema        Drop Schema along with the data
+  -d, --drop-data          Drop all data while retaining schema
+  -s, --drop-schema        Drop all data along with schema
   -l  --list-unused        List all the unused types and fields
-  -T, --drop-types         Drop unused types after schema change(syntax: <typename>)
-  -F, --drop-fields        Drop unused fields after schema change(syntax: <typename>.<fieldname>)
+  -T, --drop-types         Drop unused types after schema change(format: <typename>)
+  -F, --drop-fields        Drop unused fields after schema change(format: <typename>.<fieldname>)
 
 EXAMPLE
-  $ slash-graphql drop -e https://frozen-mango.cloud.dgraph.io/graphql -t <apiToken> [-l] [-d] [-s] [-T <types>] [-F <fields>]
+  $ slash-graphql drop -e https://frozen-mango.cloud.dgraph.io/graphql -t <apiToken> --list-unused
+  $ slash-graphql drop -e https://frozen-mango.cloud.dgraph.io/graphql -t <apiToken> --drop-data
+  $ slash-graphql drop -e https://frozen-mango.cloud.dgraph.io/graphql -t <apiToken> --drop-schema
+  $ slash-graphql drop -e https://frozen-mango.cloud.dgraph.io/graphql -t <apiToken> -T Pages  Events -F User.age Tweets.dislikes Tweets.retweets
+
 ```
 
 _See code: [src/commands/drop.ts](https://github.com/dgraph-io/slash-graphql-cli/blob/v1.11.20/src/commands/drop.ts)_

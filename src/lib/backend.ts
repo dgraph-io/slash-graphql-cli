@@ -38,7 +38,7 @@ export class Backend {
     }
   }
 
-  async queryQuery<T>(query: string, variables = {}): Promise<GraphQLResponse<T>> {
+  async query<T>(query: string, variables = {}): Promise<GraphQLResponse<T>> {
     return this.doGraphQLQuery<T>(query, variables, {endpoint: '/query'})
   }
 
