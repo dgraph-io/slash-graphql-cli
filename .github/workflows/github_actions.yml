@@ -3,6 +3,8 @@ on:
   push:
     tags:
       - "v*"
+  release:
+    types: ["created"]
 jobs:
   release:
     name: Creating Release
