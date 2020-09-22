@@ -22,6 +22,7 @@ jobs:
           prerelease: false
   publish:
     name: Publishing
+    needs: release
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -31,11 +32,59 @@ jobs:
           registry-url: https://registry.npmjs.org/
       - run: sudo apt-get install p7zip
       - run: npm install
-      - run: npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
-      - run: oclif-dev pack
-      - run: oclif-dev publish
+      - run: npx oclif-dev pack
+      - run: npx oclif-dev publish
         env:
           AWS_ACCESS_KEY_ID=${{secrets.AWS_ACCESS_KEY_ID}}
           AWS_SECRET_ACCESS_KEY=${{secrets.AWS_SECRET_ACCESS_KEY}}
+      - uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ jobs.release.steps.create_release.outputs.upload_url }}
+          asset_path: ./dist/slash-graphql-${{ github.ref }}/slash-graphql-${{ github.ref }}-darwin-x64.tar.gz
+          asset_name: slash-graphql-${{ github.ref }}-darwin-x64.tar.gz
+          asset_content_type: application/gzip
+      - uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ jobs.release.steps.create_release.outputs.upload_url }}
+          asset_path: ./dist/slash-graphql-${{ github.ref }}/slash-graphql-${{ github.ref }}-linux-arm.tar.gz
+          asset_name: slash-graphql-${{ github.ref }}-linux-arm.tar.gz
+          asset_content_type: application/gzip
+      - uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ jobs.release.steps.create_release.outputs.upload_url }}
+          asset_path: ./dist/slash-graphql-${{ github.ref }}/slash-graphql-${{ github.ref }}-linux-x64.tar.gz
+          asset_name: slash-graphql-${{ github.ref }}-linux-x64.tar.gz
+          asset_content_type: application/gzip
+      - uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ jobs.release.steps.create_release.outputs.upload_url }}
+          asset_path: ./dist/slash-graphql-${{ github.ref }}/slash-graphql-${{ github.ref }}-win32-x64.tar.gz
+          asset_name: slash-graphql-${{ github.ref }}-win32-x64.tar.gz
+          asset_content_type: application/gzip
+      - uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ jobs.release.steps.create_release.outputs.upload_url }}
+          asset_path: ./dist/slash-graphql-${{ github.ref }}/slash-graphql-${{ github.ref }}-win32-x86.tar.gz
+          asset_name: slash-graphql-${{ github.ref }}-win32-x86.tar.gz
+          asset_content_type: application/gzip
+      - uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ jobs.release.steps.create_release.outputs.upload_url }}
+          asset_path: ./dist/slash-graphql-${{ github.ref }}/slash-graphql-${{ github.ref }}.tar.gz
+          asset_name: slash-graphql-${{ github.ref }}.tar.gz
+          asset_content_type: application/gzip
+      - run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
