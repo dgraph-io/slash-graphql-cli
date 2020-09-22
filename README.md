@@ -114,11 +114,13 @@ OPTIONS
   -d, --drop-data          Drop all data while retaining schema
   -s, --drop-schema        Drop all data along with schema
   -l  --list-unused        List all the unused types and fields
+  -u  --drop-unused        Drop all unused types and fields
   -T, --drop-types         Drop unused types after schema change(format: <typename>)
   -F, --drop-fields        Drop unused fields after schema change(format: <typename>.<fieldname>)
 
 EXAMPLE
   $ slash-graphql drop -e https://frozen-mango.cloud.dgraph.io/graphql -t <apiToken> --list-unused
+  $ slash-graphql drop -e https://frozen-mango.cloud.dgraph.io/graphql -t <apiToken> --drop-unused
   $ slash-graphql drop -e https://frozen-mango.cloud.dgraph.io/graphql -t <apiToken> --drop-data
   $ slash-graphql drop -e https://frozen-mango.cloud.dgraph.io/graphql -t <apiToken> --drop-schema
   $ slash-graphql drop -e https://frozen-mango.cloud.dgraph.io/graphql -t <apiToken> -T Pages  Events -F User.age Tweets.dislikes Tweets.retweets
