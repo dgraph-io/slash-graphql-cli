@@ -36,7 +36,7 @@ jobs:
           draft: false
           prerelease: false
   upload_artifacts:
-    name: Upload Artifacts
+    name: Upload Artifacts - Ubuntu
     needs: release
     runs-on: ubuntu-latest
     steps:
@@ -52,51 +52,61 @@ jobs:
         env:
           AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY_ID}}
           AWS_SECRET_ACCESS_KEY: ${{secrets.AWS_SECRET_ACCESS_KEY}}
+      - run: npx oclif-dev pack:deb
+      - run: npx oclif-dev publish:deb
       - uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ needs.release.outputs.upload_url }}
-          asset_path: ./dist/slash-graphql-${{ needs.release.outputs.tag_name }}/slash-graphql-${{ needs.release.outputs.tag_name }}-darwin-x64.tar.gz
-          asset_name: slash-graphql-${{ needs.release.outputs.tag_name }}-darwin-x64.tar.gz
-          asset_content_type: application/gzip
+          asset_path: ./dist/deb/slash-graphql-${{ needs.release.outputs.tag_name }}.deb
+          asset_name: slash-graphql-${{ needs.release.outputs.tag_name }}.deb
+          asset_content_type: application/vnd.debian.binary-package
+  upload_artifacts_osx:
+    name: Upload Artifacts - MacOS
+    needs: release
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 12
+          registry-url: https://registry.npmjs.org/
+      - run: npm install
+      - run: npx oclif-dev pack:macos
+      - run: npx oclif-dev publish:macos
+        env:
+          AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY_ID}}
+          AWS_SECRET_ACCESS_KEY: ${{secrets.AWS_SECRET_ACCESS_KEY}}
       - uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ needs.release.outputs.upload_url }}
-          asset_path: ./dist/slash-graphql-${{ needs.release.outputs.tag_name }}/slash-graphql-${{ needs.release.outputs.tag_name }}-linux-arm.tar.gz
-          asset_name: slash-graphql-${{ needs.release.outputs.tag_name }}-linux-arm.tar.gz
-          asset_content_type: application/gzip
+          asset_path: ./dist/macos/slash-graphql-${{ needs.release.outputs.tag_name }}.pkg
+          asset_name: slash-graphql-${{ needs.release.outputs.tag_name }}.pkg
+          asset_content_type: application/x-newton-compatible-pkg
+  upload_artifacts_win:
+    name: Upload Artifacts - Windows
+    needs: release
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 12
+          registry-url: https://registry.npmjs.org/
+      - run: npm install
+      - run: npx oclif-dev pack:win
+      - run: npx oclif-dev publish:win
+        env:
+          AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY_ID}}
+          AWS_SECRET_ACCESS_KEY: ${{secrets.AWS_SECRET_ACCESS_KEY}}
       - uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ needs.release.outputs.upload_url }}
-          asset_path: ./dist/slash-graphql-${{ needs.release.outputs.tag_name }}/slash-graphql-${{ needs.release.outputs.tag_name }}-linux-x64.tar.gz
-          asset_name: slash-graphql-${{ needs.release.outputs.tag_name }}-linux-x64.tar.gz
-          asset_content_type: application/gzip
-      - uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ needs.release.outputs.upload_url }}
-          asset_path: ./dist/slash-graphql-${{ needs.release.outputs.tag_name }}/slash-graphql-${{ needs.release.outputs.tag_name }}-win32-x64.tar.gz
-          asset_name: slash-graphql-${{ needs.release.outputs.tag_name }}-win32-x64.tar.gz
-          asset_content_type: application/gzip
-      - uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ needs.release.outputs.upload_url }}
-          asset_path: ./dist/slash-graphql-${{ needs.release.outputs.tag_name }}/slash-graphql-${{ needs.release.outputs.tag_name }}-win32-x86.tar.gz
-          asset_name: slash-graphql-${{ needs.release.outputs.tag_name }}-win32-x86.tar.gz
-          asset_content_type: application/gzip
-      - uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ needs.release.outputs.upload_url }}
-          asset_path: ./dist/slash-graphql-${{ needs.release.outputs.tag_name }}/slash-graphql-${{ needs.release.outputs.tag_name }}.tar.gz
-          asset_name: slash-graphql-${{ github.event.release.tag_name }}.tar.gz
-          asset_content_type: application/gzip
+          asset_path: ./dist/win/slash-graphql-${{ needs.release.outputs.tag_name }}.exe
+          asset_name: slash-graphql-${{ needs.release.outputs.tag_name }}.exe
+          asset_content_type: application/octet-stream
