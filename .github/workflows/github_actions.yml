@@ -9,18 +9,24 @@ jobs:
   release:
     name: Creating Release
     runs-on: ubuntu-latest
+    outputs:
+      upload_url: ${{ steps.create_release.outputs.upload_url }}
+      tag_name: ${{ steps.get_version.outputs.tag_name }}
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
         with:
           node-version: 12
           registry-url: https://registry.npmjs.org/
+      - id: get_version
+        run: echo "::set-output name=tag_name::${GITHUB_REF/refs\/tags\/}"
       - run: npm install
       - name: Publish to NPM
         run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
       - name: Create Release
+        id: create_release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -50,47 +56,47 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ./dist/slash-graphql-${{ github.event.release.tag_name }}/slash-graphql-${{ github.event.release.tag_name }}-darwin-x64.tar.gz
-          asset_name: slash-graphql-${{ github.event.release.tag_name }}-darwin-x64.tar.gz
+          upload_url: ${{ needs.release.outputs.upload_url }}
+          asset_path: ./dist/slash-graphql-${{ needs.release.outputs.tag_name }}/slash-graphql-${{ needs.release.outputs.tag_name }}-darwin-x64.tar.gz
+          asset_name: slash-graphql-${{ needs.release.outputs.tag_name }}-darwin-x64.tar.gz
           asset_content_type: application/gzip
       - uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ./dist/slash-graphql-${{ github.event.release.tag_name }}/slash-graphql-${{ github.event.release.tag_name }}-linux-arm.tar.gz
-          asset_name: slash-graphql-${{ github.event.release.tag_name }}-linux-arm.tar.gz
+          upload_url: ${{ needs.release.outputs.upload_url }}
+          asset_path: ./dist/slash-graphql-${{ needs.release.outputs.tag_name }}/slash-graphql-${{ needs.release.outputs.tag_name }}-linux-arm.tar.gz
+          asset_name: slash-graphql-${{ needs.release.outputs.tag_name }}-linux-arm.tar.gz
           asset_content_type: application/gzip
       - uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ./dist/slash-graphql-${{ github.event.release.tag_name }}/slash-graphql-${{ github.event.release.tag_name }}-linux-x64.tar.gz
-          asset_name: slash-graphql-${{ github.event.release.tag_name }}-linux-x64.tar.gz
+          upload_url: ${{ needs.release.outputs.upload_url }}
+          asset_path: ./dist/slash-graphql-${{ needs.release.outputs.tag_name }}/slash-graphql-${{ needs.release.outputs.tag_name }}-linux-x64.tar.gz
+          asset_name: slash-graphql-${{ needs.release.outputs.tag_name }}-linux-x64.tar.gz
           asset_content_type: application/gzip
       - uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ./dist/slash-graphql-${{ github.event.release.tag_name }}/slash-graphql-${{ github.event.release.tag_name }}-win32-x64.tar.gz
-          asset_name: slash-graphql-${{ github.event.release.tag_name }}-win32-x64.tar.gz
+          upload_url: ${{ needs.release.outputs.upload_url }}
+          asset_path: ./dist/slash-graphql-${{ needs.release.outputs.tag_name }}/slash-graphql-${{ needs.release.outputs.tag_name }}-win32-x64.tar.gz
+          asset_name: slash-graphql-${{ needs.release.outputs.tag_name }}-win32-x64.tar.gz
           asset_content_type: application/gzip
       - uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ./dist/slash-graphql-${{ github.event.release.tag_name }}/slash-graphql-${{ github.event.release.tag_name }}-win32-x86.tar.gz
-          asset_name: slash-graphql-${{ github.event.release.tag_name }}-win32-x86.tar.gz
+          upload_url: ${{ needs.release.outputs.upload_url }}
+          asset_path: ./dist/slash-graphql-${{ needs.release.outputs.tag_name }}/slash-graphql-${{ needs.release.outputs.tag_name }}-win32-x86.tar.gz
+          asset_name: slash-graphql-${{ needs.release.outputs.tag_name }}-win32-x86.tar.gz
           asset_content_type: application/gzip
       - uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ./dist/slash-graphql-${{ github.event.release.tag_name }}/slash-graphql-${{ github.event.release.tag_name }}.tar.gz
+          upload_url: ${{ needs.release.outputs.upload_url }}
+          asset_path: ./dist/slash-graphql-${{ needs.release.outputs.tag_name }}/slash-graphql-${{ needs.release.outputs.tag_name }}.tar.gz
           asset_name: slash-graphql-${{ github.event.release.tag_name }}.tar.gz
           asset_content_type: application/gzip
