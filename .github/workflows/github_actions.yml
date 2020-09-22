@@ -17,11 +17,11 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
         with:
           tag_name: ${{ github.ref }}
-          release_name: v${{ github.ref }}
+          release_name: ${{ github.ref }}
           draft: false
           prerelease: false
   publish:
-    name: Publishing to NPM
+    name: Publishing
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -29,13 +29,13 @@ jobs:
         with:
           node-version: 12
           registry-url: https://registry.npmjs.org/
-      - run: npm publish --access public
+      - run: sudo apt-get install p7zip
+      - run: npm install
+      - run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
-  upload:
-    name: Creating a oclif binary and uploading to S3
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
       - run: oclif-dev pack
       - run: oclif-dev publish
+        env:
+          AWS_ACCESS_KEY_ID=${{secrets.AWS_ACCESS_KEY_ID}}
+          AWS_SECRET_ACCESS_KEY=${{secrets.AWS_SECRET_ACCESS_KEY}}
