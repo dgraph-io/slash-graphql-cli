@@ -7,35 +7,32 @@ jobs:
   release:
     name: Creating Release
     runs-on: ubuntu-latest
-    outputs:
-      upload_url: ${{ steps.create_release.outputs.upload_url }}
-      version: ${{ steps.create_release.get_version.VERSION }}
-    steps:
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: ${{ github.ref }}
-          draft: false
-          prerelease: false
-      - name: Get the version
-        id: get_version
-        run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
-  publish:
-    name: Publishing
-    needs: release
-    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
         with:
           node-version: 12
           registry-url: https://registry.npmjs.org/
-      - run: sudo apt-get install p7zip
       - run: npm install
+      - name: Publish to NPM
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+      - name: Create Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: ${{ github.ref }}
+          draft: false
+          prerelease: false
+  publish:
+    name: Publishing
+    needs: release
+    runs-on: ubuntu-latest
+    steps:
+      - run: sudo apt-get install p7zip
       - run: npx oclif-dev pack
       - run: npx oclif-dev publish
         env:
@@ -89,6 +86,3 @@ jobs:
           asset_path: ./dist/slash-graphql-${{ needs.release.outputs.version }}/slash-graphql-${{ needs.release.outputs.version }}.tar.gz
           asset_name: slash-graphql-${{ needs.release.outputs.version }}.tar.gz
           asset_content_type: application/gzip
-      - run: npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
