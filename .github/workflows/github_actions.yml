@@ -35,7 +35,7 @@ jobs:
           release_name: ${{ github.ref }}
           draft: false
           prerelease: false
-  upload_artifacts:
+  upload_artifacts_linux:
     name: Upload Artifacts - Ubuntu
     needs: release
     runs-on: ubuntu-latest
@@ -52,7 +52,7 @@ jobs:
         env:
           AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY_ID}}
           AWS_SECRET_ACCESS_KEY: ${{secrets.AWS_SECRET_ACCESS_KEY}}
-      - run: npx oclif-dev pack:deb
+      - run: sudo npx oclif-dev pack:deb
       - run: npx oclif-dev publish:deb
       - uses: actions/upload-release-asset@v1
         env:
