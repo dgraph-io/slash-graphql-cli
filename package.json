@@ -61,6 +61,11 @@
     ],
     "macos": {
       "identifier": "io.dgraph.cloud.cli"
+    },
+    "update": {
+      "s3": {
+        "bucket": "slashgraphql-cli"
+      }
     }
   },
   "repository": "dgraph-io/slash-graphql-cli",
