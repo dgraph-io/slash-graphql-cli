@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       upload_url: ${{ steps.create_release.outputs.upload_url }}
-      version: ${{ steps.create_release.get_version.version }}
+      version: ${{ steps.create_release.get_version.VERSION }}
     steps:
       - name: Create Release
         id: create_release
@@ -23,7 +23,7 @@ jobs:
           prerelease: false
       - name: Get the version
         id: get_version
-        run: echo ::set-output name=version::$(echo $GITHUB_REF | cut -d / -f 3)
+        run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
   publish:
     name: Publishing
     needs: release
