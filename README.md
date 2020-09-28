@@ -7,14 +7,16 @@ Manage Slash GraphQL from the comfort of your command line!
 [![License](https://img.shields.io/npm/l/slash-graphql.svg)](https://github.com/dgraph-io/slash-graphql-cli/blob/master/package.json)
 
 <!-- toc -->
-* [slash-graphql](#slash-graphql)
-* [Usage](#usage)
-* [Commands](#commands)
+
+- [slash-graphql](#slash-graphql)
+- [Usage](#usage)
+- [Commands](#commands)
 <!-- tocstop -->
 
 # Usage
 
 <!-- usage -->
+
 ```sh-session
 $ npm install -g slash-graphql
 $ slash-graphql COMMAND
@@ -26,26 +28,28 @@ USAGE
   $ slash-graphql COMMAND
 ...
 ```
+
 <!-- usagestop -->
 
 # Commands
 
 <!-- commands -->
-* [`slash-graphql deploy-backend NAME`](#slash-graphql-deploy-backend-name)
-* [`slash-graphql destroy-backend ID`](#slash-graphql-destroy-backend-id)
-* [`slash-graphql drop-data`](#slash-graphql-drop-data)
-* [`slash-graphql export-data OUTPUTDIR`](#slash-graphql-export-data-outputdir)
-* [`slash-graphql get-schema [FILE]`](#slash-graphql-get-schema-file)
-* [`slash-graphql help [COMMAND]`](#slash-graphql-help-command)
-* [`slash-graphql import-data INPUT`](#slash-graphql-import-data-input)
-* [`slash-graphql list-backends`](#slash-graphql-list-backends)
-* [`slash-graphql login`](#slash-graphql-login)
-* [`slash-graphql logout`](#slash-graphql-logout)
-* [`slash-graphql restore-backend`](#slash-graphql-restore-backend)
-* [`slash-graphql restore-backend-status RESTOREID`](#slash-graphql-restore-backend-status-restoreid)
-* [`slash-graphql update [CHANNEL]`](#slash-graphql-update-channel)
-* [`slash-graphql update-backend ID`](#slash-graphql-update-backend-id)
-* [`slash-graphql update-schema [FILE]`](#slash-graphql-update-schema-file)
+
+- [`slash-graphql deploy-backend NAME`](#slash-graphql-deploy-backend-name)
+- [`slash-graphql destroy-backend ID`](#slash-graphql-destroy-backend-id)
+- [`slash-graphql drop`](#slash-graphql-drop)
+- [`slash-graphql export-data OUTPUTDIR`](#slash-graphql-export-data-outputdir)
+- [`slash-graphql get-schema [FILE]`](#slash-graphql-get-schema-file)
+- [`slash-graphql help [COMMAND]`](#slash-graphql-help-command)
+- [`slash-graphql import-data INPUT`](#slash-graphql-import-data-input)
+- [`slash-graphql list-backends`](#slash-graphql-list-backends)
+- [`slash-graphql login`](#slash-graphql-login)
+- [`slash-graphql logout`](#slash-graphql-logout)
+- [`slash-graphql restore-backend`](#slash-graphql-restore-backend)
+- [`slash-graphql restore-backend-status RESTOREID`](#slash-graphql-restore-backend-status-restoreid)
+- [`slash-graphql update [CHANNEL]`](#slash-graphql-update-channel)
+- [`slash-graphql update-backend ID`](#slash-graphql-update-backend-id)
+- [`slash-graphql update-schema [FILE]`](#slash-graphql-update-schema-file)
 
 ## `slash-graphql deploy-backend NAME`
 
@@ -94,26 +98,36 @@ EXAMPLE
 
 _See code: [src/commands/destroy-backend.ts](https://github.com/dgraph-io/slash-graphql-cli/blob/v1.11.20/src/commands/destroy-backend.ts)_
 
-## `slash-graphql drop-data`
+## `slash-graphql drop`
 
-Drop all data in your backend
+Drop data, schema or unused types/fields in your backend.
 
 ```
 USAGE
-  $ slash-graphql drop-data
+  $ slash-graphql drop
 
 OPTIONS
   -e, --endpoint=endpoint  Slash GraphQL Endpoint
   -q, --quiet              Quiet Output
-  -s, --drop-schema        Drop Schema along with the data
   -t, --token=token        Slash GraphQL Backend API Tokens
   -y, --confirm            Skip Confirmation
+  -d, --drop-data          Drop all data while retaining schema
+  -s, --drop-schema        Drop all data along with schema
+  -l  --list-unused        List all the unused types and fields
+  -u  --drop-unused        Drop all unused types and fields
+  -T, --drop-types         Drop unused types after schema change(format: <typename>)
+  -F, --drop-fields        Drop unused fields after schema change(format: <typename>.<fieldname>)
 
 EXAMPLE
-  $ slash-graphql drop-data -e https://frozen-mango.cloud.dgraph.io/graphql -t <apiToken> schema-file.graphql
+  $ slash-graphql drop -e https://frozen-mango.cloud.dgraph.io/graphql -t <apiToken> --list-unused
+  $ slash-graphql drop -e https://frozen-mango.cloud.dgraph.io/graphql -t <apiToken> --drop-unused
+  $ slash-graphql drop -e https://frozen-mango.cloud.dgraph.io/graphql -t <apiToken> --drop-data
+  $ slash-graphql drop -e https://frozen-mango.cloud.dgraph.io/graphql -t <apiToken> --drop-schema
+  $ slash-graphql drop -e https://frozen-mango.cloud.dgraph.io/graphql -t <apiToken> -T Pages  Events -F User.age Tweets.dislikes Tweets.retweets
+
 ```
 
-_See code: [src/commands/drop-data.ts](https://github.com/dgraph-io/slash-graphql-cli/blob/v1.11.20/src/commands/drop-data.ts)_
+_See code: [src/commands/drop.ts](https://github.com/dgraph-io/slash-graphql-cli/blob/v1.11.20/src/commands/drop.ts)_
 
 ## `slash-graphql export-data OUTPUTDIR`
 
@@ -280,7 +294,7 @@ OPTIONS
   -y, --confirm            Skip Confirmation
 
 EXAMPLE
-  $ slash-graphql restore-backend -e https://clone.cloud.dgraph.io/graphql -t <apiToken> --source <source backend id or 
+  $ slash-graphql restore-backend -e https://clone.cloud.dgraph.io/graphql -t <apiToken> --source <source backend id or
   url>
 ```
 
@@ -362,4 +376,5 @@ EXAMPLE
 ```
 
 _See code: [src/commands/update-schema.ts](https://github.com/dgraph-io/slash-graphql-cli/blob/v1.11.20/src/commands/update-schema.ts)_
+
 <!-- commandsstop -->

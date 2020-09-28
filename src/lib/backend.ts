@@ -38,6 +38,10 @@ export class Backend {
     }
   }
 
+  async query<T>(query: string, variables = {}): Promise<GraphQLResponse<T>> {
+    return this.doGraphQLQuery<T>(query, variables, {endpoint: '/query'})
+  }
+
   async adminQuery<T>(query: string, variables = {}): Promise<GraphQLResponse<T>> {
     return this.doGraphQLQuery<T>(query, variables, {endpoint: '/admin'})
   }
