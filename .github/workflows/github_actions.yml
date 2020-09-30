@@ -62,7 +62,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ needs.release.outputs.upload_url }}
-          asset_path: ./dist/deb/slash-graphql-${{ needs.release.outputs.tag_name }}.deb
+          asset_path: ./dist/deb/slash-graphql-${{ needs.release.outputs.tag_name }}-1_amd64.deb
           asset_name: slash-graphql-${{ needs.release.outputs.tag_name }}.deb
           asset_content_type: application/vnd.debian.binary-package
   upload_artifacts_osx:
@@ -99,7 +99,7 @@ jobs:
         with:
           node-version: 12
           registry-url: https://registry.npmjs.org/
-      - run: choco install nsis
+      - run: choco install nsis -y
       - run: npm install
       - run: npx oclif-dev pack:win
       - run: npx oclif-dev publish:win
