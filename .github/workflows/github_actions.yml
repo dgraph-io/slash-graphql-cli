@@ -66,8 +66,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ needs.release.outputs.upload_url }}
-          asset_path: ./dist/deb/slash-graphql-${{ needs.release.outputs.tag_name }}.deb
-          asset_name: slash-graphql-${{ needs.release.outputs.tag_name }}.deb
+          asset_path: ./dist/deb/slash-graphql-${{ needs.release.outputs.tag_name }}-1_amd64.deb
+          asset_name: slash-graphql-${{ needs.release.outputs.tag_name }}-1_amd64.deb
           asset_content_type: application/vnd.debian.binary-package
   upload_artifacts_osx:
     name: Upload Artifacts - MacOS
@@ -117,6 +117,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ needs.release.outputs.upload_url }}
-          asset_path: ./dist/win/slash-graphql-${{ needs.release.outputs.tag_name }}.exe
-          asset_name: slash-graphql-${{ needs.release.outputs.tag_name }}.exe
+          asset_path: ./dist/win/slash-graphql-${{ needs.release.outputs.tag_name }}-x64.exe
+          asset_name: slash-graphql-${{ needs.release.outputs.tag_name }}-x64.exe
           asset_content_type: application/octet-stream
