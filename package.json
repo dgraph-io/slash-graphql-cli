@@ -18,6 +18,7 @@
     "loadash": "^1.0.0",
     "node-fetch": "^2.6.0",
     "open": "^7.1.0",
+    "rimraf": "^3.0.2",
     "sleep-promise": "^8.0.1",
     "tslib": "^1.13.0",
     "yaml": "^1.10.0"
@@ -73,9 +74,9 @@
   },
   "repository": "dgraph-io/slash-graphql-cli",
   "scripts": {
-    "postpack": "rm -f oclif.manifest.json",
+    "postpack": "rimraf oclif.manifest.json",
     "posttest": "eslint . --ext .ts --config .eslintrc",
-    "prepack": "rm -rf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
+    "prepack": "rimraf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
     "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\"",
     "version": "oclif-dev readme && git add README.md"
   },
