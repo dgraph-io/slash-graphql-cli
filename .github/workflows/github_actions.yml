@@ -62,7 +62,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ needs.release.outputs.upload_url }}
-          asset_path: ./dist/deb/slash-graphql-${{ needs.release.outputs.tag_name }}-1_amd64.deb
+          asset_path: ./dist/deb/slash-graphql-${{ needs.release.outputs.tag_name }}.deb
           asset_name: slash-graphql-${{ needs.release.outputs.tag_name }}.deb
           asset_content_type: application/vnd.debian.binary-package
   upload_artifacts_osx:
@@ -92,7 +92,7 @@ jobs:
   upload_artifacts_win:
     name: Upload Artifacts - Windows
     needs: release
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
