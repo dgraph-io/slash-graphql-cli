@@ -99,8 +99,10 @@ jobs:
         with:
           node-version: 12
           registry-url: https://registry.npmjs.org/
+      - run: sudo apt-get install -t unstable nsis
+      - run: sudo apt-get install p7zip
       - run: npm install
-      - run: npx oclif-dev pack:win
+      - run: sudo npx oclif-dev pack:win
       - run: npx oclif-dev publish:win
         env:
           AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY_ID}}
