@@ -99,6 +99,7 @@ jobs:
         with:
           node-version: 12
           registry-url: https://registry.npmjs.org/
+      - run: choco install nsis
       - run: npm install
       - run: npx oclif-dev pack:win
       - run: npx oclif-dev publish:win
