@@ -39,6 +39,7 @@ USAGE
 * [`slash-graphql help [COMMAND]`](#slash-graphql-help-command)
 * [`slash-graphql import-data INPUT`](#slash-graphql-import-data-input)
 * [`slash-graphql list-backends`](#slash-graphql-list-backends)
+* [`slash-graphql list-backups`](#slash-graphql-list-backups)
 * [`slash-graphql login`](#slash-graphql-login)
 * [`slash-graphql logout`](#slash-graphql-logout)
 * [`slash-graphql restore-backend`](#slash-graphql-restore-backend)
@@ -233,6 +234,24 @@ EXAMPLES
 ```
 
 _See code: [src/commands/list-backends.ts](https://github.com/dgraph-io/slash-graphql-cli/blob/v1.12.1/src/commands/list-backends.ts)_
+
+## `slash-graphql list-backups`
+
+List all backups
+
+```
+USAGE
+  $ slash-graphql list-backups
+
+OPTIONS
+  -e, --endpoint=endpoint  Slash GraphQL Endpoint
+  -t, --token=token        Slash GraphQL Backend API Tokens
+
+EXAMPLES
+  $ slash-graphql list-backups
+```
+
+_See code: [src/commands/list-backups.ts](https://github.com/dgraph-io/slash-graphql-cli/blob/v1.12.1/src/commands/list-backups.ts)_
 
 ## `slash-graphql login`
 
