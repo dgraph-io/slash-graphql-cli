@@ -301,12 +301,12 @@ OPTIONS
   -e, --endpoint=endpoint  Slash GraphQL Endpoint
   -q, --quiet              Quiet Output
   -s, --source=source      (required) Source backend ID or url to get the data to be restored
+  -n, --backup-number      Backup number of the source backend, obtained from list-backups. Defaults to 0(latest)
   -t, --token=token        Slash GraphQL Backend API Tokens
   -y, --confirm            Skip Confirmation
 
 EXAMPLE
-  $ slash-graphql restore-backend -e https://clone.cloud.dgraph.io/graphql -t <apiToken> --source <source backend id or 
-  url>
+  $ slash-graphql restore-backend -e https://clone.cloud.dgraph.io/graphql -t <apiToken> --source <source backend id or url> [--backup-number <backup-number>]
 ```
 
 _See code: [src/commands/restore-backend.ts](https://github.com/dgraph-io/slash-graphql-cli/blob/v1.12.1/src/commands/restore-backend.ts)_
