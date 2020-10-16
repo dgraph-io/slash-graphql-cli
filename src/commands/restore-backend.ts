@@ -4,8 +4,8 @@ import {flags} from '@oclif/command'
 import {cli} from 'cli-ux'
 
 const RESTORE_MUTATION  = `
-mutation($uid: String!) {
-  restore(uid: $uid) {
+mutation($uid: String!, $backupNum: Int) {
+  restore(uid: $uid, backupNum: $backupNum) {
     response { code message restoreId }
   }
 }`
@@ -20,6 +20,7 @@ export default class RestoreBackend extends BaseCommand {
     static flags = {
       ...BaseCommand.commonFlags,
       ...BaseCommand.endpointFlags,
+      'backup-number': flags.integer({char: 'n', description: 'Backup number to restore from', default: 0}),
       source: flags.string({char: 's', description: 'Source backend ID or url to get the data to be restored', required: true}),
       confirm: flags.boolean({char: 'y', description: 'Skip Confirmation', default: false}),
     }
@@ -44,8 +45,11 @@ export default class RestoreBackend extends BaseCommand {
         return
       }
 
+      const backupNum = opts.flags['backup-number']
+
       const {errors, data} = await backend.slashAdminQuery<{restore: {response: {code: string; message: string; restoreId: number}}}>(RESTORE_MUTATION, {
         uid: sourceID,
+        backupNum: backupNum,
       })
 
       if (errors) {
