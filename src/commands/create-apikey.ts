@@ -14,7 +14,7 @@ export default class CreateApikey extends BaseCommand {
   static flags = {
     ...BaseCommand.commonFlags,
     name: flags.string({char: 'n', description: 'Client name', default: 'slash-graphql-cli'}),
-    isAdmin: flags.boolean({char: 'a', description: 'Grant admin role', default: false})
+    admin: flags.boolean({char: 'a', description: 'Grant admin role', default: false})
   }
 
   static args = [{name: 'id', description: 'Backend id', required: true}]
@@ -47,7 +47,7 @@ export default class CreateApikey extends BaseCommand {
       },
       body: JSON.stringify({
         name: opts.args.name,
-        role: opts.args.isAdmin ? 'admin' : 'client'
+        role: opts.args.admin ? 'admin' : 'client'
       })
     })
     if (response.status !== 200) {
