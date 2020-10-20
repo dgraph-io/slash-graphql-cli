@@ -17,6 +17,7 @@ export default class DeployBackend extends BaseCommand {
     ...BaseCommand.commonFlags,
     region: flags.string({char: 'r', description: 'Region', default: 'us-west-2'}),
     subdomain: flags.string({char: 's', description: 'Subdomain'}),
+    deploymentMode: flags.string({char: 'm', description: 'Deployment Mode', default: 'graphql'})
   }
 
   static args = [{name: 'name', description: 'Backend Name', required: true}]
@@ -41,6 +42,7 @@ export default class DeployBackend extends BaseCommand {
         name: opts.args.name,
         zone: opts.flags.region,
         subdomain: opts.flags.subdomain,
+        deploymentMode: opts.flags.deploymentMode
       }),
     })
     if (response.status !== 200) {
