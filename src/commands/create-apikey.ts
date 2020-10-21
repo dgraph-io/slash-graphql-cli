@@ -6,6 +6,7 @@ import {cli} from 'cli-ux'
 
 export default class CreateApikey extends BaseCommand {
   static description = 'Create an API key for a Backend by id'
+  static hidden = true
 
   static examples = [
     '$ slash-graphql create-apikey "0xid"',
@@ -14,7 +15,7 @@ export default class CreateApikey extends BaseCommand {
   static flags = {
     ...BaseCommand.commonFlags,
     name: flags.string({char: 'n', description: 'Client name', default: 'slash-graphql-cli'}),
-    admin: flags.boolean({char: 'a', description: 'Grant admin role', default: false})
+    role: flags.string({char: 'r', description: 'Client role', default: 'client', options: ['admin', 'client']})
   }
 
   static args = [{name: 'id', description: 'Backend id', required: true}]
@@ -47,7 +48,7 @@ export default class CreateApikey extends BaseCommand {
       },
       body: JSON.stringify({
         name: opts.args.name,
-        role: opts.args.admin ? 'admin' : 'client'
+        role: opts.args.role
       })
     })
     if (response.status !== 200) {
