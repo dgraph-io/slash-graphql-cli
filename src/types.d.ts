@@ -8,6 +8,13 @@ interface APIBackend {
   deploymentMode: string;
 }
 
+interface APIKey {
+  key: string;
+  name: string;
+  role: string;
+  uid: string;
+}
+
 interface AuthConfig {
   apiTime: number;
   access_token: string;
