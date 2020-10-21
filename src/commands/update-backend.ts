@@ -15,7 +15,7 @@ export default class UpdateBackend extends BaseCommand {
     ...BaseCommand.commonFlags,
     name: flags.string({char: 'n', description: 'Name'}),
     confirm: flags.boolean({char: 'y', description: 'Skip Confirmation', default: false}),
-    deploymentMode: flags.string({char: 'm', description: 'Deployment Mode', options: ['readonly', 'graphql', 'flexible'], hidden: true}),
+    'deployment-mode': flags.string({char: 'm', description: 'Deployment Mode', options: ['readonly', 'graphql', 'flexible']}),
   }
 
   static args = [{name: 'id', description: 'Backend UID', required: true}]
@@ -34,13 +34,13 @@ export default class UpdateBackend extends BaseCommand {
       this.error('Please login with `slash-graphql` login')
     }
 
-    const updates: Record<string, string> = {};
-    ['name', 'deploymentMode'].forEach(key => {
-      const flags = opts.flags as any
-      if (flags[key]) {
-        updates[key] = flags[key]
-      }
-    })
+    const updates: Record<string, string> = {}
+    if (opts.flags.name) {
+      updates.name = opts.flags.name
+    }
+    if (opts.flags['deployment-mode']) {
+      updates.deploymentMode = opts.flags['deployment-mode']
+    }
 
     if (Object.keys(updates).length === 0) {
       this.error('Please pass in a property to update')

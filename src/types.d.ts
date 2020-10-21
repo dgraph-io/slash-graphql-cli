@@ -5,6 +5,7 @@ interface APIBackend {
   zone: string;
   uid: string;
   owner: string;
+  deploymentMode: string;
 }
 
 interface AuthConfig {

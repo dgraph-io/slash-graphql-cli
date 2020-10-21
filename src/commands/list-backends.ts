@@ -45,6 +45,10 @@ export default class ListBackends extends BaseCommand {
         get: ({zone}) => zone,
         extended: true,
       },
+      mode: {
+        get: ({deploymentMode}) => deploymentMode,
+        extended: true,
+      },
       endpoint: {
         get: ({url}) => `https://${url}/graphql`,
       },
