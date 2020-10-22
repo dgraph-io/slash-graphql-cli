@@ -47,8 +47,8 @@ export default class CreateApikey extends BaseCommand {
         Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({
-        name: opts.args.name,
-        role: opts.args.role
+        name: opts.flags.name,
+        role: opts.flags.role
       })
     })
     if (response.status !== 200) {
