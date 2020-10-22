@@ -41,14 +41,15 @@ export default class CreateApikey extends BaseCommand {
       this.error('Cannot find the backend that you are trying to create an API key for. Please run `slash-graphql list-backends` to get a list of backends')
     }
 
-    const response = await fetch(`${apiServer}/deployment/${id}/api-keys`, {
+    const response = await fetch(`${apiServer}/deployments/${id}/api-keys`, {
       method: 'POST',
       headers: {
-        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
       },
       body: JSON.stringify({
-        name: opts.args.name,
-        role: opts.args.role
+        name: opts.flags.name,
+        role: opts.flags.role
       })
     })
     if (response.status !== 200) {
