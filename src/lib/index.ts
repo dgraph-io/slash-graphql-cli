@@ -62,12 +62,12 @@ export abstract class BaseCommand extends Command {
   }
 
   async backendFromOpts(opts: Output<{ endpoint: string | undefined; token: string | undefined; environment: string }, any>): Promise<Backend> {
-    const {apiServer, authFile} = getEnvironment(opts.flags.environment)
-    const endpoint = await this.convertToGraphQLEndpoint(apiServer, authFile, opts.flags.endpoint)
+    const {apiServer, apiServerGo, authFile} = getEnvironment(opts.flags.environment)
+    const endpoint = await this.convertToGraphQLEndpoint(apiServer, apiServerGo, authFile, opts.flags.endpoint)
     if (!endpoint) {
       this.error('Please pass an endpoint or cluster id with the -e flag')
     }
-    const token = opts.flags.token || await this.getEndpointJWTToken(apiServer, authFile, endpoint)
+    const token = opts.flags.token || await this.getEndpointJWTToken(apiServer, apiServerGo, authFile, endpoint)
     if (!token) {
       this.error('Please login with `slash-graphql login` or pass a token with the -t flag')
     }
@@ -80,14 +80,14 @@ export abstract class BaseCommand extends Command {
     await writeFile(join(this.config.configDir, authFile), yaml.stringify(token))
   }
 
-  async getEndpointJWTToken(apiServer: string, authFile: string, endpoint: string) {
+  async getEndpointJWTToken(apiServer: string, apiServerGo: string, authFile: string, endpoint: string) {
     const host = new URL(endpoint).host
     const token = await this.getAccessToken(apiServer, authFile)
     if (!token) {
       return null
     }
 
-    const backends = await this.getBackends(apiServer, token)
+    const backends = await this.getBackends(apiServerGo, token)
 
     if (backends === null) {
       return null
@@ -101,14 +101,26 @@ export abstract class BaseCommand extends Command {
     return null
   }
 
-  async getBackends(apiServer: string, token: string): Promise<APIBackend[] | null> {
-    const backendsResponse = await fetch(`${apiServer}/deployments`, {
-      headers: {Authorization: `Bearer ${token}`},
+  async getBackends(apiServerGo: string, token: string): Promise<APIBackend[] | null> {
+    const query = `{
+      deployments {
+        uid
+        name
+        zone
+        url
+        owner
+        jwtToken
+        deploymentMode
+      }
+    }`
+    const backendsResponse = await fetch(apiServerGo, {
+      method: 'POST',
+      headers: {Authorization: `Bearer ${token}`, 'Content-Type': 'application/json'},
+      body: JSON.stringify({query}),
     })
-    if (backendsResponse.status !== 200) {
-      return null
-    }
-    return await backendsResponse.json() as APIBackend[]
+
+    const res = await backendsResponse.json()
+    return res.data.deployments as APIBackend[]
   }
 
   async readAuthFile(authFile: string): Promise<AuthConfig> {
@@ -152,24 +164,24 @@ export abstract class BaseCommand extends Command {
     return data.access_token as string
   }
 
-  async findBackendByUid(apiServer: string, token: string, uid: string) {
-    const backends = await this.getBackends(apiServer, token)
+  async findBackendByUid(apiServerGo: string, token: string, uid: string) {
+    const backends = await this.getBackends(apiServerGo, token)
     if (!backends) {
       this.error('Please login with `slash-graphql login`')
     }
     return backends.find(backend => backend.uid === uid) || null
   }
 
-  async findBackendByUrl(apiServer: string, token: string, url: string) {
+  async findBackendByUrl(apiServerGo: string, token: string, url: string) {
     const hotname = new URL(url).host
-    const backends = await this.getBackends(apiServer, token)
+    const backends = await this.getBackends(apiServerGo, token)
     if (!backends) {
       this.error('Please login with `slash-graphql login`')
     }
     return backends.find(backend => backend.url === hotname) || null
   }
 
-  async convertToGraphQLEndpoint(apiServer: string, authFile: string, endpoint: string | undefined): Promise<string | null> {
+  async convertToGraphQLEndpoint(apiServer: string, apiServerGo: string, authFile: string, endpoint: string | undefined): Promise<string | null> {
     if (!endpoint) {
       return null
     }
@@ -184,7 +196,7 @@ export abstract class BaseCommand extends Command {
       this.error('Please login with `slash-graphql login` in order to access endpoints by id')
     }
 
-    const backend = await this.findBackendByUid(apiServer, token, endpoint)
+    const backend = await this.findBackendByUid(apiServerGo, token, endpoint)
     if (!backend) {
       this.error(`Cannot find backend ${endpoint}`)
     }
@@ -192,7 +204,7 @@ export abstract class BaseCommand extends Command {
     return `https://${backend.url}/graphql`
   }
 
-  async convertToGraphQLUid(apiServer: string, authFile: string, endpoint: string | undefined): Promise<string | null> {
+  async convertToGraphQLUid(apiServer: string, apiServerGo: string, authFile: string, endpoint: string | undefined): Promise<string | null> {
     if (!endpoint) {
       return null
     }
@@ -207,7 +219,7 @@ export abstract class BaseCommand extends Command {
       this.error('Please login with `slash-graphql login` in order to access endpoints by url')
     }
 
-    const backend = await this.findBackendByUrl(apiServer, token, endpoint)
+    const backend = await this.findBackendByUrl(apiServerGo, token, endpoint)
     if (!backend) {
       this.error(`Cannot find backend ${endpoint}`)
     }

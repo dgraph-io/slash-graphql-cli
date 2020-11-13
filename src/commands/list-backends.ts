@@ -17,7 +17,7 @@ export default class ListBackends extends BaseCommand {
 
   async run() {
     const opts = this.parse(ListBackends)
-    const {apiServer, authFile} = getEnvironment(opts.flags.environment)
+    const {apiServer, apiServerGo, authFile} = getEnvironment(opts.flags.environment)
 
     const token = await this.getAccessToken(apiServer, authFile)
     if (!token) {
@@ -25,7 +25,7 @@ export default class ListBackends extends BaseCommand {
       return
     }
 
-    const backends = await this.getBackends(apiServer, token)
+    const backends = await this.getBackends(apiServerGo, token)
     if (backends === null) {
       this.error('Unable to fetch backends. Please try logging in again with `slash-graphql login`')
     }

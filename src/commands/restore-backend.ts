@@ -35,8 +35,8 @@ export default class RestoreBackend extends BaseCommand {
       let sourceID = opts.flags.source
 
       if (!sourceID.match(/0x[0-9a-f]+/)) {
-        const {apiServer, authFile} = getEnvironment(opts.flags.environment)
-        sourceID = await this.convertToGraphQLUid(apiServer, authFile, sourceID) || ''
+        const {apiServer, apiServerGo, authFile} = getEnvironment(opts.flags.environment)
+        sourceID = await this.convertToGraphQLUid(apiServer, apiServerGo, authFile, sourceID) || ''
       }
 
       if (!(opts.flags.confirm || await this.confirm())) {

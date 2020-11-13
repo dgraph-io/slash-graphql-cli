@@ -25,7 +25,7 @@ export default class DestroyBackend extends BaseCommand {
 
   async run() {
     const opts = this.parse(DestroyBackend)
-    const {apiServer, authFile} = getEnvironment(opts.flags.environment)
+    const {apiServer, apiServerGo, authFile} = getEnvironment(opts.flags.environment)
 
     const id = opts.args.id
 
@@ -38,7 +38,7 @@ export default class DestroyBackend extends BaseCommand {
       this.error('Please login with `slash-graphql login`')
     }
 
-    const backend = this.findBackendByUid(apiServer, token, id)
+    const backend = this.findBackendByUid(apiServerGo, token, id)
 
     if (!backend) {
       this.error('Cannot find the backend that you are trying to delete. Please run `slash-graphql list-backends` to get a list of backends')

@@ -22,7 +22,7 @@ export default class CreateApikey extends BaseCommand {
 
   async run() {
     const opts = this.parse(CreateApikey)
-    const {apiServer, authFile} = getEnvironment(opts.flags.environment)
+    const {apiServer, apiServerGo, authFile} = getEnvironment(opts.flags.environment)
 
     const id = opts.args.id
 
@@ -35,7 +35,7 @@ export default class CreateApikey extends BaseCommand {
       this.error('Please login with `slash-graphql login`')
     }
 
-    const backend = this.findBackendByUid(apiServer, token, id)
+    const backend = this.findBackendByUid(apiServerGo, token, id)
 
     if (!backend) {
       this.error('Cannot find the backend that you are trying to create an API key for. Please run `slash-graphql list-backends` to get a list of backends')
@@ -45,12 +45,12 @@ export default class CreateApikey extends BaseCommand {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({
         name: opts.flags.name,
-        role: opts.flags.role
-      })
+        role: opts.flags.role,
+      }),
     })
     if (response.status !== 200) {
       this.error(`Unable to create API key. Try logging in again\n${await response.text()}`)
