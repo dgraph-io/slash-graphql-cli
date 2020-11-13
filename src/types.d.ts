@@ -6,6 +6,7 @@ interface APIBackend {
   uid: string;
   owner: string;
   deploymentMode: string;
+  lambdaScript: string;
 }
 
 interface APIKey {
