@@ -102,13 +102,24 @@ export abstract class BaseCommand extends Command {
   }
 
   async getBackends(apiServer: string, token: string): Promise<APIBackend[] | null> {
-    const backendsResponse = await fetch(`${apiServer}/deployments`, {
-      headers: {Authorization: `Bearer ${token}`},
+    const query = `{
+      deployments {
+        uid
+        name
+        zone
+        url
+        owner
+        jwtToken
+        deploymentMode
+      }
+    }`
+    const backendsResponse = await fetch(`${apiServer}/graphql`, {
+      method: 'POST',
+      headers: {Authorization: `Bearer ${token}`, 'Content-Type': 'application/json'},
+      body: JSON.stringify({query}),
     })
-    if (backendsResponse.status !== 200) {
-      return null
-    }
-    return await backendsResponse.json() as APIBackend[]
+    const res = await backendsResponse.json()
+    return res.data.deployments as APIBackend[]
   }
 
   async readAuthFile(authFile: string): Promise<AuthConfig> {
