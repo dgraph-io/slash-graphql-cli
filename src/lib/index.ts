@@ -111,6 +111,28 @@ export abstract class BaseCommand extends Command {
     return await backendsResponse.json() as APIBackend[]
   }
 
+  async getBackendsGo(apiServerGo: string, token: string): Promise<APIBackend[] | null> {
+    const query = `{
+      deployments {
+        uid
+        name
+        zone
+        url
+        owner
+        jwtToken
+        deploymentMode
+      }
+    }`
+    const backendsResponse = await fetch(apiServerGo, {
+      method: 'POST',
+      headers: {Authorization: `Bearer ${token}`, 'Content-Type': 'application/json'},
+      body: JSON.stringify({query}),
+    })
+
+    const res = await backendsResponse.json()
+    return res.data.deployments as APIBackend[]
+  }
+
   async readAuthFile(authFile: string): Promise<AuthConfig> {
     const yamlContent = await readFile(join(this.config.configDir, authFile))
     return yaml.parse(yamlContent.toString())
