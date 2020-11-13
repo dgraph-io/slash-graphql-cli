@@ -111,6 +111,7 @@ export abstract class BaseCommand extends Command {
         owner
         jwtToken
         deploymentMode
+        lambdaScript
       }
     }`
     const backendsResponse = await fetch(`${apiServer}/graphql`, {
@@ -120,6 +121,32 @@ export abstract class BaseCommand extends Command {
     })
     const res = await backendsResponse.json()
     return res.data.deployments as APIBackend[]
+  }
+
+  async patchBackend(apiServer: string, token: string, deploymentUid: string, attrs: any) {
+    const response = await fetch(`${apiServer}/deployment/${deploymentUid}`, {
+      method: 'PATCH',
+      headers: {Authorization: `Bearer ${token}`, 'Content-Type': 'application/json'},
+      body: JSON.stringify(attrs),
+    })
+
+    const res = await response.json()
+    if (response.status !== 200) {
+      this.error(res)
+    }
+
+    return res
+  }
+
+  async sendGraphQLRequest(apiServer: string, token: string, query: string, variables: any) {
+    const response = await fetch(`${apiServer}/graphql`, {
+      method: 'POST',
+      headers: {Authorization: `Bearer ${token}`, 'Content-Type': 'application/json'},
+      body: JSON.stringify({query, variables}),
+    })
+
+    const res = await response.json()
+    return res
   }
 
   async readAuthFile(authFile: string): Promise<AuthConfig> {
