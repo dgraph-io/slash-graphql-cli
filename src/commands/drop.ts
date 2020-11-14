@@ -41,22 +41,20 @@ export default class Drop extends BaseCommand {
     '$ slash-graphql drop -e https://frozen-mango.cloud.dgraph.io/graphql -t <apiToken> [-l] [-d] [-s] [-T <types>] [-F <fields>]',
   ]
 
-  static getOtherFlags(excludeFlag: string) {
-    const options = ['list-unused', 'drpo-unused', 'drop-data', 'drop-schema', 'drop-types', 'drop-fields']
-    const index = options.indexOf(excludeFlag)
-    options.splice(index, 1)
-    return options
+  static getOtherFlags(excludeFlags: string[]) {
+    const options = ['list-unused', 'drop-unused', 'drop-data', 'drop-schema', 'drop-types', 'drop-fields']
+    return options.filter(option => !excludeFlags.includes(option))
   }
 
   static flags = {
     ...BaseCommand.commonFlags,
     ...BaseCommand.endpointFlags,
-    'list-unused': flags.boolean({char: 'l', description: 'List unused types and fields', default: false, exclusive: Drop.getOtherFlags('list-unused')}),
-    'drop-unused': flags.boolean({char: 'u', description: 'Drops all unused types and fields', default: false, exclusive: Drop.getOtherFlags('drop-unused')}),
-    'drop-data': flags.boolean({char: 'd', description: 'Drop data and leave the schema', default: false, exclusive: Drop.getOtherFlags('drop-data')}),
-    'drop-schema': flags.boolean({char: 's', description: 'Drop Schema along with the data', default: false, exclusive: Drop.getOtherFlags('drop-schema')}),
-    'drop-types': flags.string({char: 'T', description: 'Drop types', multiple: true, exclusive: ['list-unused', 'drop-unused', 'drop-data', 'drop-schema']}),
-    'drop-fields': flags.string({char: 'F', description: 'Drop types', multiple: true, exclusive: ['list-unused', 'drop-unused', 'drop-data', 'drop-schema']}),
+    'list-unused': flags.boolean({char: 'l', description: 'List unused types and fields', default: false, exclusive: Drop.getOtherFlags(['list-unused'])}),
+    'drop-unused': flags.boolean({char: 'u', description: 'Drops all unused types and fields', default: false, exclusive: Drop.getOtherFlags(['drop-unused'])}),
+    'drop-data': flags.boolean({char: 'd', description: 'Drop data and leave the schema', default: false, exclusive: Drop.getOtherFlags(['drop-data'])}),
+    'drop-schema': flags.boolean({char: 's', description: 'Drop Schema along with the data', default: false, exclusive: Drop.getOtherFlags(['drop-schema'])}),
+    'drop-types': flags.string({char: 'T', description: 'Drop types', multiple: true, exclusive: Drop.getOtherFlags(['drop-types', 'drop-fields'])}),
+    'drop-fields': flags.string({char: 'F', description: 'Drop types', multiple: true, exclusive: Drop.getOtherFlags(['drop-types', 'drop-fields'])}),
     confirm: flags.boolean({char: 'y', description: 'Skip Confirmation', default: false}),
   }
 
