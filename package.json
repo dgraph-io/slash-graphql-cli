@@ -1,7 +1,7 @@
 {
   "name": "slash-graphql",
   "description": "Command Line Tools to Manage Slash GraphQL",
-  "version": "1.16.1",
+  "version": "1.16.2",
   "author": "Dgraph Labs @dgraphlabs",
   "bin": {
     "slash-graphql": "./bin/run"
