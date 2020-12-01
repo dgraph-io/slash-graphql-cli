@@ -2,10 +2,11 @@
 import schemaParser from './schemaparser'
 
 export const getTypesDiff = (schema, graphqlEx) => {
+  const graphqlExRegex = /^dgraph.*/
   const graphql = schemaParser(schema)
   const graphqlTypes = graphql.types.map(type => type.name)
   const graphqlExTypes = graphqlEx.types
-  .filter(type => type.name !== 'dgraph.graphql')
+  .filter(type => !graphqlExRegex.test(type.name))
   .map(type => type.name)
 
   return graphqlExTypes.filter(type => graphqlTypes.indexOf(type) === -1)

@@ -1,7 +1,7 @@
 // @ts-nocheck
 import {buildSchema} from 'graphql'
 import schemaExtras from './schemaextras'
-import * as difference from 'lodash/difference'
+import difference from 'lodash/difference'
 
 const compare = (a, b) => a.astNode.loc.start - b.astNode.loc.start
 
