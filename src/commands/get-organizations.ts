@@ -24,8 +24,6 @@ export default class GetOrganizations extends BaseCommand {
     '$ slash-graphql get-organizations',
   ]
 
-  static aliases = ['get-organizations']
-
   static flags = {
     ...BaseCommand.commonFlags,
   }

@@ -15,17 +15,14 @@ export default class AddOrganizationMember extends BaseCommand {
   static description = 'Add a Member to an Organization'
 
   static examples = [
-    '$ slash-graphql add-organization-member 0x123 test@gmail.com',
+    '$ slash-graphql add-organization-member -o 0x123 -m test@gmail.com',
   ]
-
-  static aliases = ['add-organization-member']
 
   static flags = {
     ...BaseCommand.commonFlags,
     member: flags.string({char: 'm', description: 'Member email ID', default: ''}),
+    organization: flags.string({char: 'o', description: 'Organization UID', default: ''}),
   }
-
-  static args = [{name: 'name', description: 'Organization UID', required: true}]
 
   async run() {
     const opts = this.parse(AddOrganizationMember)
@@ -39,7 +36,7 @@ export default class AddOrganizationMember extends BaseCommand {
 
     const {errors, data} = await this.sendGraphQLRequest(apiServer, token, ADD_ORGANIZATION_MEMBER, {
       member: {
-        organizationUID: opts.args.name,
+        organizationUID: opts.flags.organization,
         email: opts.flags.member,
       },
     })
@@ -49,6 +46,6 @@ export default class AddOrganizationMember extends BaseCommand {
       }
       return
     }
-    this.log(JSON.stringify(data.addOrganizationMember))
+    this.log('User', opts.flags.member, 'successfully added to', data.addOrganizationMember.uid, 'organization.')
   }
 }

@@ -38,8 +38,8 @@ export default class DeleteOrganizationMember extends BaseCommand {
     }
 
     const {errors, data} = await this.sendGraphQLRequest(apiServer, token, DELETE_ORGANIZATION_MEMBER, {
-      input: {
-        organizationUID: opts.args.organization,
+      member: {
+        organizationUID: opts.flags.organization,
         memberUID: opts.flags.member,
       },
     })
@@ -49,6 +49,6 @@ export default class DeleteOrganizationMember extends BaseCommand {
       }
       return
     }
-    this.log(JSON.stringify(data.deleteOrganizationMember))
+    this.log('Member', opts.flags.member, 'successfully removed from', data.deleteOrganizationMember.name, 'organization.')
   }
 }

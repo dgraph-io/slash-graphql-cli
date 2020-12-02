@@ -18,8 +18,6 @@ export default class CreateOrganization extends BaseCommand {
     '$ slash-graphql create-organization "My New Organization"',
   ]
 
-  static aliases = ['create-organization']
-
   static flags = {
     ...BaseCommand.commonFlags,
     region: flags.string({char: 'r', description: 'Region', default: 'us-west-2'}),
@@ -47,6 +45,6 @@ export default class CreateOrganization extends BaseCommand {
       }
       return
     }
-    this.log(data.createOrganization)
+    this.log('Organization', data.createOrganization.name, 'created successfully.')
   }
 }

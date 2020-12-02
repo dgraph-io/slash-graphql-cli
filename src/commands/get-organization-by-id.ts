@@ -1,6 +1,5 @@
 import {BaseCommand} from '../lib'
 import {getEnvironment} from '../lib/environments'
-import {flags} from '@oclif/command'
 
 const GET_ORGANIZATION_BY_ID = `
 query GetOrganizationById($orgID: ID!) {
@@ -35,10 +34,7 @@ export default class GetOrganizationByID extends BaseCommand {
 
   static aliases = ['get-organization-by-id']
 
-  static flags = {
-    ...BaseCommand.commonFlags,
-    organization: flags.string({char: 'o', description: 'Organization UID', default: ''}),
-  }
+  static args = [{name: 'OrganizationUID', description: 'Organization UID', required: true}]
 
   async run() {
     const opts = this.parse(GetOrganizationByID)
@@ -51,7 +47,7 @@ export default class GetOrganizationByID extends BaseCommand {
     }
 
     const {errors, data} = await this.sendGraphQLRequest(apiServer, token, GET_ORGANIZATION_BY_ID, {
-      orgID: opts.flags.organization,
+      orgID: opts.args.OrganizationUID,
     })
     if (errors) {
       for (const {message} of errors) {
@@ -59,6 +55,10 @@ export default class GetOrganizationByID extends BaseCommand {
       }
       return
     }
-    this.log(errors, JSON.stringify(data.getOrganizationByID, null, 2))
+    this.log('Name of organization:', data.getOrganizationByID.name)
+    this.log('Members of organization: ')
+    for (const {uid, auth0User} of data.getOrganizationByID.members) {
+      this.log(auth0User.email, uid)
+    }
   }
 }
