@@ -1,6 +1,5 @@
 import {BaseCommand} from '../lib'
 import {getEnvironment} from '../lib/environments'
-import {flags} from '@oclif/command'
 
 const DELETE_ORGANIZATION_MEMBER = `
 mutation DeleteOrganizationMember($member: DeleteOrgMember!) {
@@ -12,23 +11,24 @@ mutation DeleteOrganizationMember($member: DeleteOrgMember!) {
 
 `
 
-export default class DeleteOrganizationMember extends BaseCommand {
+export default class DeleteMemberFromOrganization extends BaseCommand {
   static description = 'Delete a Member from Organization'
 
   static examples = [
-    '$ slash-graphql delete-organization-member 0x123 -m 0x1234',
+    '$ slash-graphql delete-organization-member 0x123 0x1234',
   ]
-
-  static aliases = ['delete-organization-member']
 
   static flags = {
     ...BaseCommand.commonFlags,
-    member: flags.string({char: 'm', description: 'Member UID', default: ''}),
-    organization: flags.string({char: 'o', description: 'Organization UID', default: ''}),
   }
 
+  static args = [
+    {name: 'organization', description: 'Organization UID', required: true},
+    {name: 'member', description: 'Member UID', required: true},
+  ]
+
   async run() {
-    const opts = this.parse(DeleteOrganizationMember)
+    const opts = this.parse(DeleteMemberFromOrganization)
     const {apiServer, authFile} = getEnvironment(opts.flags.environment)
 
     const token = await this.getAccessToken(apiServer, authFile)
@@ -39,8 +39,8 @@ export default class DeleteOrganizationMember extends BaseCommand {
 
     const {errors, data} = await this.sendGraphQLRequest(apiServer, token, DELETE_ORGANIZATION_MEMBER, {
       member: {
-        organizationUID: opts.flags.organization,
-        memberUID: opts.flags.member,
+        organizationUID: opts.args.organization,
+        memberUID: opts.args.member,
       },
     })
     if (errors) {
@@ -49,6 +49,6 @@ export default class DeleteOrganizationMember extends BaseCommand {
       }
       return
     }
-    this.log('Member', opts.flags.member, 'successfully removed from', data.deleteOrganizationMember.name, 'organization.')
+    this.log('Member', opts.args.member, 'successfully removed from', data.deleteOrganizationMember.name, 'organization.')
   }
 }

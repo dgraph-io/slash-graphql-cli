@@ -1,5 +1,6 @@
 import {BaseCommand} from '../lib'
 import {getEnvironment} from '../lib/environments'
+import {cli} from 'cli-ux'
 
 const GET_ORGANIZATIONS = `
 query GetOrganizations {
@@ -17,11 +18,11 @@ query GetOrganizations {
 }
 `
 
-export default class GetOrganizations extends BaseCommand {
+export default class ListOrganizations extends BaseCommand {
   static description = 'Get Organizations associated with the user'
 
   static examples = [
-    '$ slash-graphql get-organizations',
+    '$ slash-graphql list-organizations',
   ]
 
   static flags = {
@@ -29,7 +30,7 @@ export default class GetOrganizations extends BaseCommand {
   }
 
   async run() {
-    const opts = this.parse(GetOrganizations)
+    const opts = this.parse(ListOrganizations)
     const {apiServer, authFile} = getEnvironment(opts.flags.environment)
 
     const token = await this.getAccessToken(apiServer, authFile)
@@ -45,6 +46,28 @@ export default class GetOrganizations extends BaseCommand {
       }
       return
     }
-    this.log(JSON.stringify(data.organizations, null, 2))
+
+    if (data.organizations === null) {
+      this.error('Unable to fetch organizations. Please try logging in again with `slash-graphql login`')
+    }
+
+    if (data.organizations.length === 0) {
+      this.warn('You do not have any organizations.')
+    }
+
+    cli.table(data.organizations, {
+      uid: {
+        minWidth: 7,
+      },
+      name: {
+        minWidth: 10,
+      },
+      createdBy: {
+        get: org => org.createdBy.auth0User.email,
+      },
+    }, {
+      printLine: this.log,
+      ...opts.flags, // parsed flags
+    })
   }
 }

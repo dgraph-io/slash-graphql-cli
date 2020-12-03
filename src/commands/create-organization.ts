@@ -1,6 +1,5 @@
 import {BaseCommand} from '../lib'
 import {getEnvironment} from '../lib/environments'
-import {flags} from '@oclif/command'
 
 const CREATE_ORGANIZATION = `
 mutation CreateOrganization($name: String!) {
@@ -15,12 +14,11 @@ export default class CreateOrganization extends BaseCommand {
   static description = 'Create an Organization'
 
   static examples = [
-    '$ slash-graphql create-organization "My New Organization"',
+    '$ slash-graphql create-organization myNewOrganization',
   ]
 
   static flags = {
     ...BaseCommand.commonFlags,
-    region: flags.string({char: 'r', description: 'Region', default: 'us-west-2'}),
   }
 
   static args = [{name: 'name', description: 'Organization Name', required: true}]

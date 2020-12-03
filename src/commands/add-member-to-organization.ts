@@ -1,6 +1,5 @@
 import {BaseCommand} from '../lib'
 import {getEnvironment} from '../lib/environments'
-import {flags} from '@oclif/command'
 
 const ADD_ORGANIZATION_MEMBER = `
 mutation AddOrganizationMember($member: AddOrgMember!) {
@@ -11,21 +10,24 @@ mutation AddOrganizationMember($member: AddOrgMember!) {
 }
 `
 
-export default class AddOrganizationMember extends BaseCommand {
+export default class AddMemberToOrganization extends BaseCommand {
   static description = 'Add a Member to an Organization'
 
   static examples = [
-    '$ slash-graphql add-organization-member -o 0x123 -m test@gmail.com',
+    '$ slash-graphql add-member-to-organization 0x123 user@dgraph.io',
   ]
 
   static flags = {
     ...BaseCommand.commonFlags,
-    member: flags.string({char: 'm', description: 'Member email ID', default: ''}),
-    organization: flags.string({char: 'o', description: 'Organization UID', default: ''}),
   }
 
+  static args = [
+    {name: 'organization', description: 'Organization Name', required: true},
+    {name: 'member', description: 'Member Email Address', required: true},
+  ]
+
   async run() {
-    const opts = this.parse(AddOrganizationMember)
+    const opts = this.parse(AddMemberToOrganization)
     const {apiServer, authFile} = getEnvironment(opts.flags.environment)
 
     const token = await this.getAccessToken(apiServer, authFile)
@@ -36,8 +38,8 @@ export default class AddOrganizationMember extends BaseCommand {
 
     const {errors, data} = await this.sendGraphQLRequest(apiServer, token, ADD_ORGANIZATION_MEMBER, {
       member: {
-        organizationUID: opts.flags.organization,
-        email: opts.flags.member,
+        organizationUID: opts.args.organization,
+        email: opts.args.member,
       },
     })
     if (errors) {
@@ -46,6 +48,6 @@ export default class AddOrganizationMember extends BaseCommand {
       }
       return
     }
-    this.log('User', opts.flags.member, 'successfully added to', data.addOrganizationMember.uid, 'organization.')
+    this.log('User', opts.args.member, 'successfully added to', data.addOrganizationMember.uid, 'organization.')
   }
 }
