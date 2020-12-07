@@ -15,7 +15,7 @@ export default class DeleteMemberFromOrganization extends BaseCommand {
   static description = 'Delete a Member from Organization'
 
   static examples = [
-    '$ slash-graphql delete-organization-member 0x123 0x1234',
+    '$ slash-graphql delete-organization-member 0x123 member@dgraph.io',
   ]
 
   static flags = {
@@ -24,7 +24,7 @@ export default class DeleteMemberFromOrganization extends BaseCommand {
 
   static args = [
     {name: 'organization', description: 'Organization UID', required: true},
-    {name: 'member', description: 'Member UID', required: true},
+    {name: 'member', description: 'Member Email Address', required: true},
   ]
 
   async run() {
@@ -40,7 +40,7 @@ export default class DeleteMemberFromOrganization extends BaseCommand {
     const {errors, data} = await this.sendGraphQLRequest(apiServer, token, DELETE_ORGANIZATION_MEMBER, {
       member: {
         organizationUID: opts.args.organization,
-        memberUID: opts.args.member,
+        memberEmail: opts.args.member,
       },
     })
     if (errors) {
