@@ -26,7 +26,7 @@ query GetOrganizations {
 `
 
 export default class ListOrganizations extends BaseCommand {
-  static description = 'Get Organizations associated with the user'
+  static description = 'List Organizations associated with the user'
 
   static examples = [
     '$ slash-graphql list-organizations',
