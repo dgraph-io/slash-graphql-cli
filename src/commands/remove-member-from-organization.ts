@@ -12,10 +12,10 @@ mutation DeleteOrganizationMember($member: DeleteOrgMember!) {
 `
 
 export default class DeleteMemberFromOrganization extends BaseCommand {
-  static description = 'Delete a Member from Organization'
+  static description = 'Remove a Member from Organization'
 
   static examples = [
-    '$ slash-graphql delete-organization-member 0x123 member@dgraph.io',
+    '$ slash-graphql remove-organization-member 0x123 member@dgraph.io',
   ]
 
   static flags = {

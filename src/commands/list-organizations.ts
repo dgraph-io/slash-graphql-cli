@@ -14,6 +14,13 @@ query GetOrganizations {
         id
       }
     }
+    members {
+      uid
+      auth0User {
+        name
+        email
+      }
+    }
   }
 }
 `
@@ -54,7 +61,7 @@ export default class ListOrganizations extends BaseCommand {
     if (data.organizations.length === 0) {
       this.warn('You do not have any organizations.')
     }
-
+    // this.log('org ', JSON.stringify(data.organizations, null, 2))
     cli.table(data.organizations, {
       uid: {
         minWidth: 7,
@@ -64,6 +71,9 @@ export default class ListOrganizations extends BaseCommand {
       },
       createdBy: {
         get: org => org.createdBy.auth0User.email,
+      },
+      members: {
+        get: org => org.members.map(m=> m.auth0User.email).join(', '),
       },
     }, {
       printLine: this.log,
