@@ -72,10 +72,10 @@ export default class ListOrganizations extends BaseCommand {
         minWidth: 10,
       },
       createdBy: {
-        get: org => org.createdBy.auth0User.email,
+        get: (org: any) => org.createdBy.auth0User.email,
       },
       members: {
-        get: org => org.members.map(m=> m.auth0User.email).join(', '),
+        get: (org: any) => org.members.map((m: any) => m.auth0User.email).join(', '),
       },
     }, {
       printLine: this.log,
