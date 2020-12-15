@@ -14,6 +14,7 @@ export default class UpdateBackend extends BaseCommand {
   static flags = {
     ...BaseCommand.commonFlags,
     name: flags.string({char: 'n', description: 'Name'}),
+    organizationId: flags.string({char: 'o', description: 'Organization UID', default: ''}),
     confirm: flags.boolean({char: 'y', description: 'Skip Confirmation', default: false}),
     'deployment-mode': flags.string({char: 'm', description: 'Deployment Mode', options: ['readonly', 'graphql', 'flexible']}),
   }
@@ -40,6 +41,9 @@ export default class UpdateBackend extends BaseCommand {
     }
     if (opts.flags['deployment-mode']) {
       updates.deploymentMode = opts.flags['deployment-mode']
+    }
+    if (opts.flags.organizationId) {
+      updates.organizationId = opts.flags.organizationId
     }
 
     if (Object.keys(updates).length === 0) {
