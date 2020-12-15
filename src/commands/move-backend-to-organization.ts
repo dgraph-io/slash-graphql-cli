@@ -40,6 +40,6 @@ export default class MoveBackendToOrganization extends BaseCommand {
       this.error(`Unable to move backend to the organization. Try logging in again\n${await response.text()}`)
     }
 
-    this.log('Successfully moved Backend ' + opts.args.name + ' to Organization ' + opts.args.organizationId)
+    this.log('Successfully moved Backend ' + opts.args.name + ' to Organization ' + opts.args.organizationId + '.')
   }
 }
