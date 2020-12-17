@@ -25,7 +25,7 @@ export default class DeleteLambda extends BaseCommand {
   async run() {
     const opts = this.parse(DeleteLambda)
     const {apiServer, authFile} = getEnvironment(opts.flags.environment)
-    let endpoint = opts.flags.endpoint || ''
+    const endpoint = await this.convertToGraphQLUid(apiServer, authFile, opts.flags.endpoint) || ''
 
     const token = await this.getAccessToken(apiServer, authFile)
     if (!token) {
@@ -35,11 +35,6 @@ export default class DeleteLambda extends BaseCommand {
     if (!(opts.flags.confirm || await this.confirm('Deleting the lambda script from your backend. Make sure you have a backup.'))) {
       this.log('Aborting')
       return
-    }
-
-    if (!endpoint.match(/0x[0-9a-f]+/)) {
-      const backend = await this.findBackendByUrl(apiServer, token, endpoint)
-      endpoint = backend?.uid || ''
     }
 
     const {error, response} = await this.patchBackend(apiServer, token, endpoint, {lambdaScript: ''})

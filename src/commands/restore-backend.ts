@@ -40,12 +40,8 @@ export default class RestoreBackend extends BaseCommand {
     async run() {
       const opts = this.parse(RestoreBackend)
       const backend = await this.backendFromOpts(opts)
-      let sourceID = opts.flags.source
-
-      if (!sourceID.match(/0x[0-9a-f]+/)) {
-        const {apiServer, authFile} = getEnvironment(opts.flags.environment)
-        sourceID = await this.convertToGraphQLUid(apiServer, authFile, sourceID) || ''
-      }
+      const {apiServer, authFile} = getEnvironment(opts.flags.environment)
+      const sourceID = await this.convertToGraphQLUid(apiServer, authFile, opts.flags.source) || ''
 
       if (!(opts.flags.confirm || await this.confirm())) {
         this.log('Aborting')

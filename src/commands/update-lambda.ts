@@ -20,16 +20,11 @@ export default class LambdaLogs extends BaseCommand {
     async run() {
       const opts = this.parse(LambdaLogs)
       const {apiServer, authFile} = getEnvironment(opts.flags.environment)
-      let endpoint = opts.flags.endpoint || ''
+      const endpoint = await this.convertToGraphQLUid(apiServer, authFile, opts.flags.endpoint) || ''
 
       const token = await this.getAccessToken(apiServer, authFile)
       if (!token) {
         this.error('Please login with `slash-graphql` login')
-      }
-
-      if (!endpoint.match(/0x[0-9a-f]+/)) {
-        const backend = await this.findBackendByUrl(apiServer, token, endpoint)
-        endpoint = backend?.uid || ''
       }
 
       const data = fs.readFileSync(opts.flags.file, 'utf8')
