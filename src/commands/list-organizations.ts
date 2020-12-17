@@ -26,8 +26,6 @@ query GetOrganizations {
 `
 
 export default class ListOrganizations extends BaseCommand {
-  static hidden = true
-
   static description = 'List Organizations associated with the user'
 
   static examples = [

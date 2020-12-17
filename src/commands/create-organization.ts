@@ -11,8 +11,6 @@ mutation CreateOrganization($name: String!) {
 `
 
 export default class CreateOrganization extends BaseCommand {
-  static hidden = true
-
   static description = 'Create an Organization'
 
   static examples = [
