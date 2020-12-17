@@ -11,8 +11,6 @@ mutation AddOrganizationMember($member: AddOrgMember!) {
 `
 
 export default class AddMemberToOrganization extends BaseCommand {
-  static hidden = true
-
   static description = 'Add a Member to an Organization'
 
   static examples = [

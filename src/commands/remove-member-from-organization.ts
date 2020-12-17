@@ -12,8 +12,6 @@ mutation DeleteOrganizationMember($member: DeleteOrgMember!) {
 `
 
 export default class DeleteMemberFromOrganization extends BaseCommand {
-  static hidden = true
-
   static description = 'Remove a Member from Organization'
 
   static examples = [
