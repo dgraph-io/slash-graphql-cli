@@ -20,7 +20,7 @@ $ npm install -g slash-graphql
 $ slash-graphql COMMAND
 running command...
 $ slash-graphql (-v|--version|version)
-slash-graphql/1.16.4 darwin-x64 node-v14.9.0
+slash-graphql/1.16.5 darwin-x64 node-v14.9.0
 $ slash-graphql --help [COMMAND]
 USAGE
   $ slash-graphql COMMAND
@@ -31,6 +31,8 @@ USAGE
 # Commands
 
 <!-- commands -->
+* [`slash-graphql add-member-to-organization ORGANIZATION MEMBER`](#slash-graphql-add-member-to-organization-organization-member)
+* [`slash-graphql create-organization NAME`](#slash-graphql-create-organization-name)
 * [`slash-graphql delete-lambda`](#slash-graphql-delete-lambda)
 * [`slash-graphql deploy-backend NAME`](#slash-graphql-deploy-backend-name)
 * [`slash-graphql destroy-backend ID`](#slash-graphql-destroy-backend-id)
@@ -43,14 +45,57 @@ USAGE
 * [`slash-graphql lambda-logs`](#slash-graphql-lambda-logs)
 * [`slash-graphql list-backends`](#slash-graphql-list-backends)
 * [`slash-graphql list-backups`](#slash-graphql-list-backups)
+* [`slash-graphql list-organizations`](#slash-graphql-list-organizations)
 * [`slash-graphql login`](#slash-graphql-login)
 * [`slash-graphql logout`](#slash-graphql-logout)
+* [`slash-graphql remove-member-from-organization ORGANIZATION MEMBER`](#slash-graphql-remove-member-from-organization-organization-member)
 * [`slash-graphql restore-backend`](#slash-graphql-restore-backend)
 * [`slash-graphql restore-backend-status RESTOREID`](#slash-graphql-restore-backend-status-restoreid)
 * [`slash-graphql update [CHANNEL]`](#slash-graphql-update-channel)
 * [`slash-graphql update-backend ID`](#slash-graphql-update-backend-id)
 * [`slash-graphql update-lambda`](#slash-graphql-update-lambda)
 * [`slash-graphql update-schema [FILE]`](#slash-graphql-update-schema-file)
+
+## `slash-graphql add-member-to-organization ORGANIZATION MEMBER`
+
+Add a Member to an Organization
+
+```
+USAGE
+  $ slash-graphql add-member-to-organization ORGANIZATION MEMBER
+
+ARGUMENTS
+  ORGANIZATION  Organization Name
+  MEMBER        Member Email Address
+
+OPTIONS
+  -q, --quiet  Quiet Output
+
+EXAMPLE
+  $ slash-graphql add-member-to-organization 0x123 user@dgraph.io
+```
+
+_See code: [src/commands/add-member-to-organization.ts](https://github.com/dgraph-io/slash-graphql-cli/blob/v1.16.5/src/commands/add-member-to-organization.ts)_
+
+## `slash-graphql create-organization NAME`
+
+Create an Organization
+
+```
+USAGE
+  $ slash-graphql create-organization NAME
+
+ARGUMENTS
+  NAME  Organization Name
+
+OPTIONS
+  -q, --quiet  Quiet Output
+
+EXAMPLE
+  $ slash-graphql create-organization myNewOrganization
+```
+
+_See code: [src/commands/create-organization.ts](https://github.com/dgraph-io/slash-graphql-cli/blob/v1.16.5/src/commands/create-organization.ts)_
 
 ## `slash-graphql delete-lambda`
 
@@ -71,7 +116,7 @@ EXAMPLES
   $ slash-graphql delete-lambda -e 0x1234
 ```
 
-_See code: [src/commands/delete-lambda.ts](https://github.com/dgraph-io/slash-graphql-cli/blob/v1.16.4/src/commands/delete-lambda.ts)_
+_See code: [src/commands/delete-lambda.ts](https://github.com/dgraph-io/slash-graphql-cli/blob/v1.16.5/src/commands/delete-lambda.ts)_
 
 ## `slash-graphql deploy-backend NAME`
 
@@ -86,6 +131,7 @@ ARGUMENTS
 
 OPTIONS
   -m, --deployment-mode=readonly|graphql|flexible  [default: graphql] Deployment Mode
+  -o, --organizationId=organizationId              Organization ID
   -q, --quiet                                      Quiet Output
   -r, --region=region                              [default: us-west-2] Region
   -s, --subdomain=subdomain                        Subdomain
@@ -98,7 +144,7 @@ EXAMPLE
   $ slash-graphql deploy-backend "My New Backend"
 ```
 
-_See code: [src/commands/deploy-backend.ts](https://github.com/dgraph-io/slash-graphql-cli/blob/v1.16.4/src/commands/deploy-backend.ts)_
+_See code: [src/commands/deploy-backend.ts](https://github.com/dgraph-io/slash-graphql-cli/blob/v1.16.5/src/commands/deploy-backend.ts)_
 
 ## `slash-graphql destroy-backend ID`
 
@@ -119,7 +165,7 @@ EXAMPLE
   $ slash-graphql destroy-backend "0xid"
 ```
 
-_See code: [src/commands/destroy-backend.ts](https://github.com/dgraph-io/slash-graphql-cli/blob/v1.16.4/src/commands/destroy-backend.ts)_
+_See code: [src/commands/destroy-backend.ts](https://github.com/dgraph-io/slash-graphql-cli/blob/v1.16.5/src/commands/destroy-backend.ts)_
 
 ## `slash-graphql drop`
 
@@ -146,7 +192,7 @@ EXAMPLE
   <fields>]
 ```
 
-_See code: [src/commands/drop.ts](https://github.com/dgraph-io/slash-graphql-cli/blob/v1.16.4/src/commands/drop.ts)_
+_See code: [src/commands/drop.ts](https://github.com/dgraph-io/slash-graphql-cli/blob/v1.16.5/src/commands/drop.ts)_
 
 ## `slash-graphql export-data OUTPUTDIR`
 
@@ -168,7 +214,7 @@ EXAMPLE
   $ slash-graphql export-data -e https://frozen-mango.cloud.dgraph.io/graphql -t <apiToken> ./output-directory
 ```
 
-_See code: [src/commands/export-data.ts](https://github.com/dgraph-io/slash-graphql-cli/blob/v1.16.4/src/commands/export-data.ts)_
+_See code: [src/commands/export-data.ts](https://github.com/dgraph-io/slash-graphql-cli/blob/v1.16.5/src/commands/export-data.ts)_
 
 ## `slash-graphql get-lambda`
 
@@ -188,7 +234,7 @@ EXAMPLES
   $ slash-graphql get-lambda -e 0x1234
 ```
 
-_See code: [src/commands/get-lambda.ts](https://github.com/dgraph-io/slash-graphql-cli/blob/v1.16.4/src/commands/get-lambda.ts)_
+_See code: [src/commands/get-lambda.ts](https://github.com/dgraph-io/slash-graphql-cli/blob/v1.16.5/src/commands/get-lambda.ts)_
 
 ## `slash-graphql get-schema [FILE]`
 
@@ -213,7 +259,7 @@ EXAMPLES
   $ slash-graphql get-schema -e https://frozen-mango.cloud.dgraph.io/graphql -t <apiToken> -g
 ```
 
-_See code: [src/commands/get-schema.ts](https://github.com/dgraph-io/slash-graphql-cli/blob/v1.16.4/src/commands/get-schema.ts)_
+_See code: [src/commands/get-schema.ts](https://github.com/dgraph-io/slash-graphql-cli/blob/v1.16.5/src/commands/get-schema.ts)_
 
 ## `slash-graphql help [COMMAND]`
 
@@ -253,7 +299,7 @@ EXAMPLE
   $ slash-graphql import-data -e https://frozen-mango.cloud.dgraph.io/graphql -t <apiToken> ./import-directory
 ```
 
-_See code: [src/commands/import-data.ts](https://github.com/dgraph-io/slash-graphql-cli/blob/v1.16.4/src/commands/import-data.ts)_
+_See code: [src/commands/import-data.ts](https://github.com/dgraph-io/slash-graphql-cli/blob/v1.16.5/src/commands/import-data.ts)_
 
 ## `slash-graphql lambda-logs`
 
@@ -274,7 +320,7 @@ EXAMPLES
   $ slash-graphql lambda-logs -e 0x1234 -h 5
 ```
 
-_See code: [src/commands/lambda-logs.ts](https://github.com/dgraph-io/slash-graphql-cli/blob/v1.16.4/src/commands/lambda-logs.ts)_
+_See code: [src/commands/lambda-logs.ts](https://github.com/dgraph-io/slash-graphql-cli/blob/v1.16.5/src/commands/lambda-logs.ts)_
 
 ## `slash-graphql list-backends`
 
@@ -300,7 +346,7 @@ EXAMPLES
   $ slash-graphql list-backends --csv
 ```
 
-_See code: [src/commands/list-backends.ts](https://github.com/dgraph-io/slash-graphql-cli/blob/v1.16.4/src/commands/list-backends.ts)_
+_See code: [src/commands/list-backends.ts](https://github.com/dgraph-io/slash-graphql-cli/blob/v1.16.5/src/commands/list-backends.ts)_
 
 ## `slash-graphql list-backups`
 
@@ -319,7 +365,24 @@ EXAMPLE
   $ slash-graphql list-backups -e https://frozen-mango.cloud.dgraph.io/graphql -t <apiToken>
 ```
 
-_See code: [src/commands/list-backups.ts](https://github.com/dgraph-io/slash-graphql-cli/blob/v1.16.4/src/commands/list-backups.ts)_
+_See code: [src/commands/list-backups.ts](https://github.com/dgraph-io/slash-graphql-cli/blob/v1.16.5/src/commands/list-backups.ts)_
+
+## `slash-graphql list-organizations`
+
+List Organizations associated with the user
+
+```
+USAGE
+  $ slash-graphql list-organizations
+
+OPTIONS
+  -q, --quiet  Quiet Output
+
+EXAMPLE
+  $ slash-graphql list-organizations
+```
+
+_See code: [src/commands/list-organizations.ts](https://github.com/dgraph-io/slash-graphql-cli/blob/v1.16.5/src/commands/list-organizations.ts)_
 
 ## `slash-graphql login`
 
@@ -336,7 +399,7 @@ EXAMPLE
   $ slash-graphql login
 ```
 
-_See code: [src/commands/login.ts](https://github.com/dgraph-io/slash-graphql-cli/blob/v1.16.4/src/commands/login.ts)_
+_See code: [src/commands/login.ts](https://github.com/dgraph-io/slash-graphql-cli/blob/v1.16.5/src/commands/login.ts)_
 
 ## `slash-graphql logout`
 
@@ -355,7 +418,28 @@ EXAMPLES
   $ slash-graphql logout -a
 ```
 
-_See code: [src/commands/logout.ts](https://github.com/dgraph-io/slash-graphql-cli/blob/v1.16.4/src/commands/logout.ts)_
+_See code: [src/commands/logout.ts](https://github.com/dgraph-io/slash-graphql-cli/blob/v1.16.5/src/commands/logout.ts)_
+
+## `slash-graphql remove-member-from-organization ORGANIZATION MEMBER`
+
+Remove a Member from Organization
+
+```
+USAGE
+  $ slash-graphql remove-member-from-organization ORGANIZATION MEMBER
+
+ARGUMENTS
+  ORGANIZATION  Organization UID
+  MEMBER        Member Email Address
+
+OPTIONS
+  -q, --quiet  Quiet Output
+
+EXAMPLE
+  $ slash-graphql remove-organization-member 0x123 member@dgraph.io
+```
+
+_See code: [src/commands/remove-member-from-organization.ts](https://github.com/dgraph-io/slash-graphql-cli/blob/v1.16.5/src/commands/remove-member-from-organization.ts)_
 
 ## `slash-graphql restore-backend`
 
@@ -379,7 +463,7 @@ EXAMPLE
   url> [-f <backup folder> -n <backup number>]
 ```
 
-_See code: [src/commands/restore-backend.ts](https://github.com/dgraph-io/slash-graphql-cli/blob/v1.16.4/src/commands/restore-backend.ts)_
+_See code: [src/commands/restore-backend.ts](https://github.com/dgraph-io/slash-graphql-cli/blob/v1.16.5/src/commands/restore-backend.ts)_
 
 ## `slash-graphql restore-backend-status RESTOREID`
 
@@ -401,7 +485,7 @@ EXAMPLE
   $ slash-graphql restore-backend-status -e https://clone.cloud.dgraph.io/graphql -t <apiToken> "restoreID"
 ```
 
-_See code: [src/commands/restore-backend-status.ts](https://github.com/dgraph-io/slash-graphql-cli/blob/v1.16.4/src/commands/restore-backend-status.ts)_
+_See code: [src/commands/restore-backend-status.ts](https://github.com/dgraph-io/slash-graphql-cli/blob/v1.16.5/src/commands/restore-backend-status.ts)_
 
 ## `slash-graphql update [CHANNEL]`
 
@@ -428,6 +512,7 @@ ARGUMENTS
 OPTIONS
   -m, --deployment-mode=readonly|graphql|flexible  Deployment Mode
   -n, --name=name                                  Name
+  -o, --organizationId=organizationId              Organization UID
   -q, --quiet                                      Quiet Output
   -y, --confirm                                    Skip Confirmation
 
@@ -435,7 +520,7 @@ EXAMPLE
   $ slash-graphql update-backend -n "New Name" 0xid
 ```
 
-_See code: [src/commands/update-backend.ts](https://github.com/dgraph-io/slash-graphql-cli/blob/v1.16.4/src/commands/update-backend.ts)_
+_See code: [src/commands/update-backend.ts](https://github.com/dgraph-io/slash-graphql-cli/blob/v1.16.5/src/commands/update-backend.ts)_
 
 ## `slash-graphql update-lambda`
 
@@ -456,7 +541,7 @@ EXAMPLES
   $ slash-graphql update-lambda -e 0x1234 -f /home/user/Downloads/script.js
 ```
 
-_See code: [src/commands/update-lambda.ts](https://github.com/dgraph-io/slash-graphql-cli/blob/v1.16.4/src/commands/update-lambda.ts)_
+_See code: [src/commands/update-lambda.ts](https://github.com/dgraph-io/slash-graphql-cli/blob/v1.16.5/src/commands/update-lambda.ts)_
 
 ## `slash-graphql update-schema [FILE]`
 
@@ -478,5 +563,5 @@ EXAMPLE
   $ slash-graphql update-schema -e https://frozen-mango.cloud.dgraph.io/graphql -t <apiToken> schema-file.graphql
 ```
 
-_See code: [src/commands/update-schema.ts](https://github.com/dgraph-io/slash-graphql-cli/blob/v1.16.4/src/commands/update-schema.ts)_
+_See code: [src/commands/update-schema.ts](https://github.com/dgraph-io/slash-graphql-cli/blob/v1.16.5/src/commands/update-schema.ts)_
 <!-- commandsstop -->
