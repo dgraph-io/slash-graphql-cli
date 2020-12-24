@@ -4,6 +4,8 @@ import {flags} from '@oclif/command'
 import fetch from 'node-fetch'
 import sleep = require('sleep-promise')
 
+const defaultRegion: Record<string, string> = {dev: 'us-test-1', stg: 'us-east-1', prod: 'us-west-2'}
+
 export default class DeployBackend extends BaseCommand {
   static description = 'Launch a new Backend'
 
@@ -15,10 +17,10 @@ export default class DeployBackend extends BaseCommand {
 
   static flags = {
     ...BaseCommand.commonFlags,
-    region: flags.string({char: 'r', description: 'Region', default: 'us-west-2'}),
+    region: flags.string({char: 'r', description: 'Region'}),
     organizationId: flags.string({char: 'o', description: 'Organization ID', default: ''}),
     subdomain: flags.string({char: 's', description: 'Subdomain'}),
-    'deployment-mode': flags.string({char: 'm', description: 'Deployment Mode', default: 'graphql', options: ['readonly', 'graphql', 'flexible']}),
+    mode: flags.string({char: 'm', description: 'Backend Mode', default: 'graphql', options: ['readonly', 'graphql', 'flexible']}),
   }
 
   static args = [{name: 'name', description: 'Backend Name', required: true}]
@@ -41,14 +43,14 @@ export default class DeployBackend extends BaseCommand {
       },
       body: JSON.stringify({
         name: opts.args.name,
-        zone: opts.flags.region,
+        zone: opts.flags.region || defaultRegion[opts.flags.environment],
         subdomain: opts.flags.subdomain,
-        deploymentMode: opts.flags['deployment-mode'],
+        deploymentMode: opts.flags.mode,
         organizationId: opts.flags.organizationId,
       }),
     })
     if (response.status !== 200) {
-      this.error(`Unable to create backend. Try logging in again\n${await response.text()}`)
+      this.error(`Unable to create backend. ${response.status} ${await response.text()}`)
     }
     const deployment = await response.json() as APIBackend
     const endpoint = `https://${deployment.url}/graphql`
