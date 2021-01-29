@@ -17,7 +17,7 @@ export default class ListBackends extends BaseCommand {
 
   async run() {
     const opts = this.parse(ListBackends)
-    const {apiServer, authFile} = getEnvironment(opts.flags.environment)
+    const {apiServer, authFile, deploymentProtocol} = getEnvironment(opts.flags.environment)
 
     const token = await this.getAccessToken(apiServer, authFile)
     if (!token) {
@@ -50,7 +50,7 @@ export default class ListBackends extends BaseCommand {
         extended: true,
       },
       endpoint: {
-        get: ({url}) => `https://${url}/graphql`,
+        get: ({url}) => `${deploymentProtocol}://${url}/graphql`,
       },
     }, {
       printLine: this.log,

@@ -6,10 +6,25 @@ import sleep = require('sleep-promise')
 
 const defaultRegion: Record<string, string> = {dev: 'us-test-1', stg: 'us-east-1', prod: 'us-west-2'}
 
+const CREATE_DEPLOYMENT = `
+mutation CreateDeployment($dep: NewDeployment!) {
+  createDeployment(input: $dep) {
+      uid
+      name
+      url
+      owner
+      jwtToken
+      deploymentMode
+      lambdaScript
+    }
+}
+`;
+
 export default class DeployBackend extends BaseCommand {
   static description = 'Launch a new Backend'
 
   static examples = [
+    '$ slash-graphql deploy-backend "My New Backend"',
     '$ slash-graphql deploy-backend "My New Backend"',
   ]
 
@@ -21,13 +36,22 @@ export default class DeployBackend extends BaseCommand {
     organizationId: flags.string({char: 'o', description: 'Organization ID', default: ''}),
     subdomain: flags.string({char: 's', description: 'Subdomain'}),
     mode: flags.string({char: 'm', description: 'Backend Mode', default: 'graphql', options: ['readonly', 'graphql', 'flexible']}),
+    type: flags.string({char: 'T', description: 'Backend Type', default: 'shared', options: ['shared', 'dedicated']}),
+    jaeger: flags.string({char: 'J', description: 'Enable Jaeger (Only works for dedicated backends)', default: 'false', options: ['true', 'false']}),
+    acl: flags.string({char: 'A', description: 'Enable ACL (Only works for dedicated backends)', default: 'false', options: ['true', 'false']}),
+    dgraphHA: flags.string({char: 'H', description: 'Enable High Availability (Only works for dedicated backends)', default: 'false', options: ['true', 'false']}),
+    alphaNodes: flags.string({char: 'N', description: 'Number of Alpha Nodes Needed (Only works for dedicated backends)', default: '1'}),
+    zeroNodes: flags.string({char: 'Z', description: 'Number of Zero Nodes Needed (Only works for dedicated backends)', default: '1'}),
+    size: flags.string({char: 'S', description: 'Backend Size (Only Works for dedicated backends)', default: 'small', options: ['small', 'medium', 'large', 'xlarge']}),
+    dataFile: flags.string({char: 'd', description: 'Data File Path for Bulk Loader (Only works for dedicated backends)', default: ''}),
+    schemaFile: flags.string({char: 'c', description: 'Data File Path for Bulk Loader (Only works for dedicated backends)', default: ''}),
   }
 
   static args = [{name: 'name', description: 'Backend Name', required: true}]
 
   async run() {
     const opts = this.parse(DeployBackend)
-    const {apiServer, authFile} = getEnvironment(opts.flags.environment)
+    const {apiServer, authFile, deploymentProtocol} = getEnvironment(opts.flags.environment)
 
     const token = await this.getAccessToken(apiServer, authFile)
 
@@ -35,33 +59,40 @@ export default class DeployBackend extends BaseCommand {
       this.error('Please login with `slash-graphql login` before creating a backend')
     }
 
-    const response = await fetch(`${apiServer}/deployments/create`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({
+    const {errors, data} = await this.sendGraphQLRequest(apiServer, token, CREATE_DEPLOYMENT, {
+      dep: {
         name: opts.args.name,
         zone: opts.flags.region || defaultRegion[opts.flags.environment],
         subdomain: opts.flags.subdomain,
         deploymentMode: opts.flags.mode,
-        organizationId: opts.flags.organizationId,
-      }),
+        organizationUID: opts.flags.organizationId === "" ? null : opts.flags.organizationId,
+        enterprise: opts.flags.type === "dedicated" ? "true" : "false",
+        size: opts.flags.size,
+        aclEnabled: opts.flags.acl,
+        jaegerEnabled: opts.flags.jaeger,
+        dgraphHA: opts.flags.dgraphHA,
+        bulkLoadSchemaFilePath: opts.flags.schemaFile,
+        bulkLoadDataFilePath: opts.flags.dataFile,
+        alphaNodes: opts.flags.alphaNodes,
+        zeroNodes: opts.flags.zeroNodes,
+      },
     })
-    if (response.status !== 200) {
-      this.error(`Unable to create backend. ${response.status} ${await response.text()}`)
+    if (errors) {
+      for (const {message} of errors) {
+        this.error("Unable to create backend. " + message)
+      }
+      return
     }
-    const deployment = await response.json() as APIBackend
-    const endpoint = `https://${deployment.url}/graphql`
+
+    const deployment = data.createDeployment as APIBackend
+    const endpoint = `${deploymentProtocol}://${deployment.url}/graphql`
 
     if (!opts.flags.quiet) {
       this.log(`Waiting for backend to come up at ${endpoint}`)
     }
 
     await this.pollForEndpoint(endpoint)
-
-    this.log(endpoint)
+    this.log(`Deployment Launched at: ${endpoint}`)
   }
 
   async pollForEndpoint(endpoint: string, endTime = new Date(new Date().getTime() + (120 * 1000))) {

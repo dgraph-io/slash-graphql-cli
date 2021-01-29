@@ -130,11 +130,20 @@ ARGUMENTS
   NAME  Backend Name
 
 OPTIONS
-  -m, --mode=readonly|graphql|flexible  [default: graphql] Backend Mode
-  -o, --organizationId=organizationId   Organization ID
-  -q, --quiet                           Quiet Output
-  -r, --region=region                   Region
-  -s, --subdomain=subdomain             Subdomain
+  -m, --mode=readonly|graphql|flexible      [default: graphql] Backend Mode
+  -o, --organizationId=organizationId       Organization ID
+  -q, --quiet                               Quiet Output
+  -r, --region=region                       Region
+  -s, --subdomain=subdomain                 Subdomain
+  -T, --type=shared|dedicated               [default: shared] Backend Type
+  -J, --jaeger=true|false                   [default: false] Enable Jaeger (Only works for dedicated backends)
+  -A, --acl=true|false                      [default: false] Enable ACL (Only works for dedicated backends)
+  -H, --dgraphHA=true|false                 [default: false] Enable High Availability (Only works for dedicated backends)
+  -N, --alphaNodes=alphaNodes               [default: 1] Number of Alpha Nodes Needed (Only works for dedicated backends)
+  -Z, --zeroNodes=zeroNodes                 [default: 1] Number of Zero Nodes Needed (Only works for dedicated backends)
+  -S, --size=small|medium|large|xlarge      [default: small] Backend Size (Only Works for dedicated backends)
+  -d, --dataFile=bulkLoadDataFilePath      Data File Path for Bulk Loader (Only works for dedicated backends)
+  -c, --schemaFile=bulkLoadSchemaFilePath  Schema File Path for Bulk Loader (Only works for dedicated backends)
 
 ALIASES
   $ slash-graphql create-backend
