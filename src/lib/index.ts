@@ -139,7 +139,6 @@ export abstract class BaseCommand extends Command {
   }
 
   async sendGraphQLRequest(apiServer: string, token: string, query: string, variables: any) {
-    this.log(variables);
     const response = await fetch(`${apiServer}/graphql`, {
       method: 'POST',
       headers: {Authorization: `Bearer ${token}`, 'Content-Type': 'application/json'},

@@ -36,15 +36,13 @@ export default class DeployBackend extends BaseCommand {
     organizationId: flags.string({char: 'o', description: 'Organization ID', default: ''}),
     subdomain: flags.string({char: 's', description: 'Subdomain'}),
     mode: flags.string({char: 'm', description: 'Backend Mode', default: 'graphql', options: ['readonly', 'graphql', 'flexible']}),
-    type: flags.string({char: 'T', description: 'Backend Type', default: 'shared', options: ['shared', 'dedicated']}),
-    jaeger: flags.string({char: 'J', description: 'Enable Jaeger (Only works for dedicated backends)', default: 'false', options: ['true', 'false']}),
-    acl: flags.string({char: 'A', description: 'Enable ACL (Only works for dedicated backends)', default: 'false', options: ['true', 'false']}),
-    dgraphHA: flags.string({char: 'H', description: 'Enable High Availability (Only works for dedicated backends)', default: 'false', options: ['true', 'false']}),
-    alphaNodes: flags.string({char: 'N', description: 'Number of Alpha Nodes Needed (Only works for dedicated backends)', default: '1'}),
-    zeroNodes: flags.string({char: 'Z', description: 'Number of Zero Nodes Needed (Only works for dedicated backends)', default: '1'}),
-    size: flags.string({char: 'S', description: 'Backend Size (Only Works for dedicated backends)', default: 'small', options: ['small', 'medium', 'large', 'xlarge']}),
-    dataFile: flags.string({char: 'd', description: 'Data File Path for Bulk Loader (Only works for dedicated backends)', default: ''}),
-    schemaFile: flags.string({char: 'c', description: 'Data File Path for Bulk Loader (Only works for dedicated backends)', default: ''}),
+    type: flags.string({char: 'T', description: 'Backend Type', default: 'slash-graphql', options: ['slash-graphql', 'dedicated']}),
+    jaeger: flags.string({description: 'Enable Jaeger (Only works for dedicated backends)', default: 'false', options: ['true', 'false']}),
+    acl: flags.string({description: 'Enable ACL (Only works for dedicated backends)', default: 'false', options: ['true', 'false']}),
+    dgraphHA: flags.string({description: 'Enable High Availability (Only works for dedicated backends)', default: 'false', options: ['true', 'false']}),
+    size: flags.string({description: 'Backend Size (Only Works for dedicated backends)', default: 'small', options: ['small', 'medium', 'large', 'xlarge']}),
+    dataFile: flags.string({description: 'Data File Path for Bulk Loader (Only works for dedicated backends)', default: ''}),
+    schemaFile: flags.string({description: 'Data File Path for Bulk Loader (Only works for dedicated backends)', default: ''}),
   }
 
   static args = [{name: 'name', description: 'Backend Name', required: true}]
@@ -73,8 +71,6 @@ export default class DeployBackend extends BaseCommand {
         dgraphHA: opts.flags.dgraphHA,
         bulkLoadSchemaFilePath: opts.flags.schemaFile,
         bulkLoadDataFilePath: opts.flags.dataFile,
-        alphaNodes: opts.flags.alphaNodes,
-        zeroNodes: opts.flags.zeroNodes,
       },
     })
     if (errors) {
