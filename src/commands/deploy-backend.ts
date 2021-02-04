@@ -41,6 +41,7 @@ export default class DeployBackend extends BaseCommand {
     acl: flags.string({description: 'Enable ACL (Only works for dedicated backends)', default: 'false', options: ['true', 'false']}),
     dgraphHA: flags.string({description: 'Enable High Availability (Only works for dedicated backends)', default: 'false', options: ['true', 'false']}),
     size: flags.string({description: 'Backend Size (Only Works for dedicated backends)', default: 'small', options: ['small', 'medium', 'large', 'xlarge']}),
+    storage: flags.integer({description: 'Alpha Storage in GBs - Accepts Only Integers (Only Works for dedicated backends)', default: 10}),
     dataFile: flags.string({description: 'Data File Path for Bulk Loader (Only works for dedicated backends)', default: ''}),
     schemaFile: flags.string({description: 'Data File Path for Bulk Loader (Only works for dedicated backends)', default: ''}),
   }
@@ -66,6 +67,7 @@ export default class DeployBackend extends BaseCommand {
         organizationUID: opts.flags.organizationId === "" ? null : opts.flags.organizationId,
         enterprise: opts.flags.type === "dedicated" ? "true" : "false",
         size: opts.flags.size,
+        storage: opts.flags.storage,
         aclEnabled: opts.flags.acl,
         jaegerEnabled: opts.flags.jaeger,
         dgraphHA: opts.flags.dgraphHA,
