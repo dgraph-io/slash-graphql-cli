@@ -108,6 +108,6 @@ export default class DeployBackend extends BaseCommand {
 
       sleep(5000)
     }
-    this.error('Gave up waiting for backend after 2 minutes')
+    this.log("Looks like your backend is taking longer than usual to come up. If you are bulk loading, then it might take a little more time based on your data size.")
   }
 }
