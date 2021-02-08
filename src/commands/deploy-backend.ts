@@ -43,7 +43,8 @@ export default class DeployBackend extends BaseCommand {
     size: flags.string({description: 'Backend Size (Only Works for dedicated backends)', default: 'small', options: ['small', 'medium', 'large', 'xlarge']}),
     storage: flags.integer({description: 'Alpha Storage in GBs - Accepts Only Integers (Only Works for dedicated backends)', default: 10}),
     dataFile: flags.string({description: 'Data File Path for Bulk Loader (Only works for dedicated backends)', default: ''}),
-    schemaFile: flags.string({description: 'Data File Path for Bulk Loader (Only works for dedicated backends)', default: ''}),
+    schemaFile: flags.string({description: 'Dgraph Schema File Path for Bulk Loader (Only works for dedicated backends)', default: ''}),
+    gqlSchemaFile: flags.string({description: 'GQL Schema File Path for Bulk Loader (Only works for dedicated backends)', default: ''}),
   }
 
   static args = [{name: 'name', description: 'Backend Name', required: true}]
@@ -72,6 +73,7 @@ export default class DeployBackend extends BaseCommand {
         jaegerEnabled: opts.flags.jaeger,
         dgraphHA: opts.flags.dgraphHA,
         bulkLoadSchemaFilePath: opts.flags.schemaFile,
+        bulkLoadGQLSchemaFilePath: opts.flags.gqlSchemaFile,
         bulkLoadDataFilePath: opts.flags.dataFile,
       },
     })
@@ -108,6 +110,6 @@ export default class DeployBackend extends BaseCommand {
 
       sleep(5000)
     }
-    this.log("Looks like your backend is taking longer than usual to come up. If you are bulk loading, then it might take a little more time based on your data size.")
+    this.error("Looks like your backend is taking longer than usual to come up. If you are bulk loading, then it might take a little more time based on your data size.")
   }
 }
