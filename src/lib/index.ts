@@ -62,8 +62,8 @@ export abstract class BaseCommand extends Command {
   }
 
   async backendFromOpts(opts: Output<{ endpoint: string | undefined; token: string | undefined; environment: string }, any>): Promise<Backend> {
-    const {apiServer, authFile} = getEnvironment(opts.flags.environment)
-    const endpoint = await this.convertToGraphQLEndpoint(apiServer, authFile, opts.flags.endpoint)
+    const {apiServer, authFile, deploymentProtocol} = getEnvironment(opts.flags.environment)
+    const endpoint = await this.convertToGraphQLEndpoint(apiServer, authFile, deploymentProtocol, opts.flags.endpoint)
     if (!endpoint) {
       this.error('Please pass an endpoint or cluster id with the -e flag')
     }
@@ -207,7 +207,7 @@ export abstract class BaseCommand extends Command {
     return backends.find(backend => backend.url === hotname) || null
   }
 
-  async convertToGraphQLEndpoint(apiServer: string, authFile: string, endpoint: string | undefined): Promise<string | null> {
+  async convertToGraphQLEndpoint(apiServer: string, authFile: string, deploymentProtocol: string, endpoint: string | undefined): Promise<string | null> {
     if (!endpoint) {
       return null
     }
@@ -227,7 +227,7 @@ export abstract class BaseCommand extends Command {
       this.error(`Cannot find backend ${endpoint}`)
     }
 
-    return `https://${backend.url}/graphql`
+    return `${deploymentProtocol}://${backend.url}/graphql`
   }
 
   async convertToGraphQLUid(apiServer: string, authFile: string, endpoint: string | undefined): Promise<string | null> {
