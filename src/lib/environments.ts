@@ -1,6 +1,6 @@
 const environments = {
   stg: {
-    apiServer: 'https://api.thegaas.com',
+    apiServer: 'https://api.stage.thegaas.com',
     authFile: 'auth-stg.yml',
     deploymentProtocol: 'https',
   },
