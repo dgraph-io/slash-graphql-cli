@@ -1,5 +1,4 @@
 import fetch from 'node-fetch'
-import open = require('open')
 import sleep = require('sleep-promise')
 import {BaseCommand} from '../lib'
 import {getEnvironment} from '../lib/environments'
@@ -29,7 +28,7 @@ export default class Login extends BaseCommand {
       return
     }
     const deviceCode = await deviceCodeResponse.json()
-    open(deviceCode.verification_uri_complete)
+    this.log('Please visit the following URL in your browser of choice:' deviceCode.verification_uri_complete)
     this.log('You should see the following code in your browser:', deviceCode.user_code)
 
     const token = await this.pollForToken(apiServer, deviceCode)
