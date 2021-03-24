@@ -1,9 +1,14 @@
-import {BaseCommand} from '../lib'
-import {getEnvironment} from '../lib/environments'
-import {flags} from '@oclif/command'
+import { BaseCommand } from '../lib'
+import { getEnvironment } from '../lib/environments'
+import { flags } from '@oclif/command'
 import fetch from 'node-fetch'
-import {cli} from 'cli-ux'
+import { cli } from 'cli-ux'
 
+const DELETE_DEPLOYMENT = `
+mutation DeleteDeployment($deploymentID: String!) {
+  deleteDeployment(deploymentID: $deploymentID)
+}
+`;
 export default class DestroyBackend extends BaseCommand {
   static description = 'Destroy a Backend by id'
 
@@ -13,10 +18,10 @@ export default class DestroyBackend extends BaseCommand {
 
   static flags = {
     ...BaseCommand.commonFlags,
-    confirm: flags.boolean({char: 'y', description: 'Skip Confirmation', default: false}),
+    confirm: flags.boolean({ char: 'y', description: 'Skip Confirmation', default: false }),
   }
 
-  static args = [{name: 'id', description: 'Backend id', required: true}]
+  static args = [{ name: 'id', description: 'Backend id', required: true }]
 
   confirm() {
     this.log('This will destroy your backend, and cannot be reversed')
@@ -25,7 +30,7 @@ export default class DestroyBackend extends BaseCommand {
 
   async run() {
     const opts = this.parse(DestroyBackend)
-    const {apiServer, authFile} = getEnvironment(opts.flags.environment)
+    const { apiServer, authFile } = getEnvironment(opts.flags.environment)
 
     const id = opts.args.id
 
@@ -49,18 +54,17 @@ export default class DestroyBackend extends BaseCommand {
       return
     }
 
-    const response = await fetch(`${apiServer}/deployment/${id}`, {
-      method: 'DELETE',
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+    const { errors, data } = await this.sendGraphQLRequest(apiServer, token, DELETE_DEPLOYMENT, {
+      deploymentID: opts.args.id,
     })
-    if (response.status !== 200) {
-      this.error(`Unable to destroy backend. Try logging in again\n${await response.text()}`)
+
+    if (errors) {
+      for (const { message } of errors) {
+        this.error("Unable to update backend. " + message)
+      }
+      return
     }
 
-    if (!opts.flags.quiet) {
-      this.log('Deleted')
-    }
+    this.log(data.deleteDeployment)
   }
 }

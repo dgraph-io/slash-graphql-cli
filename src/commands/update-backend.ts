@@ -64,12 +64,11 @@ export default class UpdateBackend extends BaseCommand {
     const { errors, data } = await this.sendGraphQLRequest(apiServer, token, UPDATE_DEPLOYMENT, {
       dep: {
         uid: opts.flags.endpoint,
-        name: opts.args.name,
+        name: opts.flags.name,
         deploymentMode: opts.flags.mode,
         organizationUID: opts.flags.organizationId === "" ? null : opts.flags.organizationId,
       },
     })
-    console.log(errors)
     if (errors) {
       for (const { message } of errors) {
         this.error("Unable to update backend. " + message)
