@@ -1,8 +1,6 @@
+import { BaseCommand } from '../lib'
+import { getEnvironment } from '../lib/environments'
 import fetch from 'node-fetch'
-import open = require('open')
-import sleep = require('sleep-promise')
-import {BaseCommand} from '../lib'
-import {getEnvironment} from '../lib/environments'
 
 const LOGIN_QUERY = `
 query login($email: String!, $password: String!) {
@@ -30,11 +28,11 @@ export default class Login extends BaseCommand {
 
   async run() {
     const opts = this.parse(Login)
-    const {apiServer, authFile} = getEnvironment(opts.flags.environment)
+    const { apiServer, authFile } = getEnvironment(opts.flags.environment)
 
     const res = await fetch(`${apiServer}/graphql`, {
       method: 'POST',
-      headers: {'content-type': 'application/json'},
+      headers: { 'content-type': 'application/json' },
       body: JSON.stringify({
         query: LOGIN_QUERY,
         variables: opts.args,
@@ -59,7 +57,8 @@ export default class Login extends BaseCommand {
       return
     }
 
-    this.writeAuthFile(authFile, token)
+    const tokenJSON = { access_token: token, expires_in: 1200, token_type: 'Bearer', apiTime: Date.now(), scope: 'offline_access', refresh_token: '' }
+    this.writeAuthFile(authFile, tokenJSON)
 
     this.log('Logged In')
   }
