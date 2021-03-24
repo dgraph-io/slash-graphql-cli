@@ -57,7 +57,7 @@ export default class Login extends BaseCommand {
       return
     }
 
-    const tokenJSON = { access_token: token, expires_in: 1200, token_type: 'Bearer', apiTime: Date.now(), scope: 'offline_access', refresh_token: '' }
+    const tokenJSON = { access_token: token, expires_in: 10800, token_type: 'Bearer', apiTime: Date.now(), scope: 'offline_access', refresh_token: '' }
     this.writeAuthFile(authFile, tokenJSON)
 
     this.log('Logged In')
