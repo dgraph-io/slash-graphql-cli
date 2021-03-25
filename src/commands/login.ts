@@ -1,66 +1,65 @@
+import { BaseCommand } from '../lib'
+import { getEnvironment } from '../lib/environments'
 import fetch from 'node-fetch'
-import open = require('open')
-import sleep = require('sleep-promise')
-import {BaseCommand} from '../lib'
-import {getEnvironment} from '../lib/environments'
+
+const LOGIN_QUERY = `
+query login($email: String!, $password: String!) {
+  login(email: $email, password: $password) {
+    token
+  }
+}
+`
 
 export default class Login extends BaseCommand {
   static description = 'Login to Slash GraphQL. Calling this function will keep you logged in for 24 hours, and you will not need to pass access tokens for any backends that you own'
 
   static examples = [
-    '$ slash-graphql login',
+    '$ slash-graphql login email password',
   ]
 
   static flags = {
     ...BaseCommand.commonFlags,
   }
 
+  static args = [
+    { name: 'email', required: true },
+    { name: 'password', required: true },
+  ]
+
   async run() {
     const opts = this.parse(Login)
-    const {apiServer, authFile} = getEnvironment(opts.flags.environment)
+    const { apiServer, authFile } = getEnvironment(opts.flags.environment)
 
-    const deviceCodeResponse = await fetch(`${apiServer}/command-line/device-code`, {
+    const res = await fetch(`${apiServer}/graphql`, {
       method: 'POST',
-      headers: {'content-type': 'application/json'},
-      body: JSON.stringify({}),
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({
+        query: LOGIN_QUERY,
+        variables: opts.args,
+      }),
     })
-    if (deviceCodeResponse.status !== 200) {
-      this.error('Could not get device code from Auth0')
+
+    if (res.status !== 200) {
+      this.error('Error contacting auth server.')
       return
     }
-    const deviceCode = await deviceCodeResponse.json()
-    open(deviceCode.verification_uri_complete)
-    this.log('You should see the following code in your browser:', deviceCode.user_code)
 
-    const token = await this.pollForToken(apiServer, deviceCode)
+    const resJson = await res.json()
+
+    if (!resJson.data?.login) {
+      this.error('The email or password were incorrect. Please try again.')
+      return
+    }
+
+    const token = resJson.data.login.token
     if (!token) {
-      this.error('Was not able to get confirmation in time. Please try logging in again')
+      this.error('Error retrieving your access token.')
       return
     }
 
-    this.writeAuthFile(authFile, token)
+    const tokenJSON = { access_token: token, expires_in: 10800, token_type: 'Bearer', apiTime: Date.now(), scope: 'offline_access', refresh_token: '' }
+    this.writeAuthFile(authFile, tokenJSON)
 
     this.log('Logged In')
-  }
-
-  async pollForToken(apiServer: string, deviceCode: any): Promise<AuthConfig | undefined> {
-    // Poll until authorized
-    const pollTime = deviceCode.expires_in > 300 ? 300 : deviceCode.expires_in
-    const pollUntil = new Date(new Date().getTime() + (pollTime * 1000))
-    while (new Date() < pollUntil) {
-      // eslint-disable-next-line no-await-in-loop
-      const res = await fetch(`${apiServer}/command-line/access-token`, {
-        method: 'POST',
-        headers: {'content-type': 'application/json'},
-        body: JSON.stringify({deviceCode: deviceCode.device_code}),
-      })
-      if (res.status === 200) {
-        // eslint-disable-next-line no-await-in-loop
-        return await res.json() as AuthConfig
-      }
-
-      // eslint-disable-next-line no-await-in-loop
-      await sleep(deviceCode.interval * 1000)
-    }
   }
 }
