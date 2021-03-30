@@ -31,30 +31,13 @@ USAGE
 # Commands
 
 <!-- commands -->
-* [`slash-graphql add-member-to-organization ORGANIZATION MEMBER`](#slash-graphql-add-member-to-organization-organization-member)
-* [`slash-graphql create-organization NAME`](#slash-graphql-create-organization-name)
-* [`slash-graphql delete-lambda`](#slash-graphql-delete-lambda)
 * [`slash-graphql deploy-backend NAME`](#slash-graphql-deploy-backend-name)
 * [`slash-graphql destroy-backend ID`](#slash-graphql-destroy-backend-id)
-* [`slash-graphql drop`](#slash-graphql-drop)
-* [`slash-graphql export-data OUTPUTDIR`](#slash-graphql-export-data-outputdir)
-* [`slash-graphql get-lambda`](#slash-graphql-get-lambda)
-* [`slash-graphql get-schema [FILE]`](#slash-graphql-get-schema-file)
-* [`slash-graphql help [COMMAND]`](#slash-graphql-help-command)
-* [`slash-graphql import-data INPUT`](#slash-graphql-import-data-input)
 * [`slash-graphql lambda-logs`](#slash-graphql-lambda-logs)
-* [`slash-graphql list-backends`](#slash-graphql-list-backends)
-* [`slash-graphql list-backups`](#slash-graphql-list-backups)
-* [`slash-graphql list-organizations`](#slash-graphql-list-organizations)
 * [`slash-graphql login EMAIL PASSWORD`](#slash-graphql-login-email-password)
 * [`slash-graphql logout`](#slash-graphql-logout)
-* [`slash-graphql remove-member-from-organization ORGANIZATION MEMBER`](#slash-graphql-remove-member-from-organization-organization-member)
-* [`slash-graphql restore-backend`](#slash-graphql-restore-backend)
-* [`slash-graphql restore-backend-status RESTOREID`](#slash-graphql-restore-backend-status-restoreid)
-* [`slash-graphql update [CHANNEL]`](#slash-graphql-update-channel)
 * [`slash-graphql update-backend`](#slash-graphql-update-backend)
 * [`slash-graphql update-lambda`](#slash-graphql-update-lambda)
-* [`slash-graphql update-schema [FILE]`](#slash-graphql-update-schema-file)
 
 ## `slash-graphql add-member-to-organization ORGANIZATION MEMBER`
 
