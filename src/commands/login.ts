@@ -62,4 +62,4 @@ export default class Login extends BaseCommand {
 
     this.log('Logged In')
   }
-} 
+}
