@@ -2,6 +2,7 @@ import { BaseCommand } from '../lib'
 import { getEnvironment } from '../lib/environments'
 import { flags } from '@oclif/command'
 import { cli } from 'cli-ux'
+import fs from 'fs'
 
 
 const UPDATE_DEPLOYMENT = `
@@ -21,6 +22,7 @@ export default class UpdateBackend extends BaseCommand {
     ...BaseCommand.commonFlags,
     ...BaseCommand.endpointFlags,
     name: flags.string({ char: 'n', description: 'Name' }),
+    lambda: flags.string({ char: 'l', description: 'Lambda Script File Path', default: '' }),
     organizationId: flags.string({ char: 'o', description: 'Organization UID', default: '' }),
     confirm: flags.boolean({ char: 'y', description: 'Skip Confirmation', default: false }),
     mode: flags.string({ char: 'm', description: 'Backend Mode', options: ['readonly', 'graphql', 'flexible'] }),
@@ -37,6 +39,7 @@ export default class UpdateBackend extends BaseCommand {
     const endpoint = await this.convertToGraphQLUid(apiServer, authFile, opts.flags.endpoint) || ''
 
     const token = await this.getAccessToken(apiServer, authFile)
+    let lambdaScript = ""
     if (!token) {
       this.error('Please login with `slash-graphql` login')
     }
@@ -44,6 +47,11 @@ export default class UpdateBackend extends BaseCommand {
     const updates: Record<string, string> = {}
     if (opts.flags.name) {
       updates.name = opts.flags.name
+    }
+    if (opts.flags.lambda) {
+      const data = fs.readFileSync(opts.flags.lambda, 'utf8')
+      lambdaScript = Buffer.from(data).toString('base64')
+      updates.lambdaScript = lambdaScript
     }
     if (opts.flags.mode) {
       updates.deploymentMode = opts.flags.mode
@@ -67,6 +75,7 @@ export default class UpdateBackend extends BaseCommand {
         name: opts.flags.name,
         deploymentMode: opts.flags.mode,
         organizationUID: opts.flags.organizationId === "" ? null : opts.flags.organizationId,
+        lambdaScript: lambdaScript === "" ? null : lambdaScript,
       },
     })
     if (errors) {
