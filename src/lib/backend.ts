@@ -6,11 +6,11 @@ type GraphQLResponse<T> = {
 }
 
 export class Backend {
-  private endpointOrigin: string;
+  private readonly endpointOrigin: string;
 
-  private token: string;
+  private readonly token: string;
 
-  private error: (s: string) => never
+  private readonly error: (s: string) => never
 
   constructor(e: string, t: string, el: (s: string) => never) {
     this.endpointOrigin = new URL(e).origin

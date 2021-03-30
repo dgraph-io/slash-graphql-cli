@@ -27,7 +27,7 @@ const sanitizeType = type => {
 const parseArguments = argument => {
   return {
     [argument.name.value]:
-      argument.value.value || argument.value.values.map(arg => arg.value)
+      argument.value.value || argument.value.values.map(arg => arg.value),
   }
 }
 
@@ -58,7 +58,7 @@ const parseTypes = type => {
     name: type.name,
     description: type.description,
     subscription: hasSubscription(type),
-    fields: Object.values(type.getFields()).map(field => parseFields(field))
+    fields: Object.values(type.getFields()).map(field => parseFields(field)),
   }
 }
 

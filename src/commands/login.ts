@@ -1,5 +1,5 @@
-import { BaseCommand } from '../lib'
-import { getEnvironment } from '../lib/environments'
+import {BaseCommand} from '../lib'
+import {getEnvironment} from '../lib/environments'
 import fetch from 'node-fetch'
 
 const LOGIN_QUERY = `
@@ -22,17 +22,17 @@ export default class Login extends BaseCommand {
   }
 
   static args = [
-    { name: 'email', required: true },
-    { name: 'password', required: true },
+    {name: 'email', required: true},
+    {name: 'password', required: true},
   ]
 
   async run() {
     const opts = this.parse(Login)
-    const { apiServer, authFile } = getEnvironment(opts.flags.environment)
+    const {apiServer, authFile} = getEnvironment(opts.flags.environment)
 
     const res = await fetch(`${apiServer}/graphql`, {
       method: 'POST',
-      headers: { 'content-type': 'application/json' },
+      headers: {'content-type': 'application/json'},
       body: JSON.stringify({
         query: LOGIN_QUERY,
         variables: opts.args,
@@ -57,8 +57,8 @@ export default class Login extends BaseCommand {
       return
     }
 
-    const tokenJSON = { access_token: token, expires_in: 10800, token_type: 'Bearer', apiTime: Date.now(), scope: 'offline_access', refresh_token: '' }
-    this.writeAuthFile(authFile, tokenJSON)
+    const tokenJSON = {access_token: token, expires_in: 10800, token_type: 'Bearer', apiTime: Date.now(), scope: 'offline_access', refresh_token: ''}
+    await this.writeAuthFile(authFile, tokenJSON)
 
     this.log('Logged In')
   }

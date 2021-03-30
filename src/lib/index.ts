@@ -1,15 +1,15 @@
-import { Output } from '@oclif/parser'
-import Command, { flags } from '@oclif/command'
+import {Output} from '@oclif/parser'
+import Command, {flags} from '@oclif/command'
 import * as fs from 'fs'
-import { spawn } from 'child_process'
-import { Backend } from './backend'
+import {spawn} from 'child_process'
+import {Backend} from './backend'
 import * as getStdin from 'get-stdin'
-import { getEnvironment } from './environments'
-import { join } from 'path'
+import {getEnvironment} from './environments'
+import {join} from 'path'
 import yaml = require('yaml')
 import fetch from 'node-fetch'
 
-const { stat, mkdir, unlink } = fs.promises
+const {stat, mkdir, unlink} = fs.promises
 
 export async function createDirectory(path: string) {
   try {
@@ -18,7 +18,7 @@ export async function createDirectory(path: string) {
       throw new Error('Output path is not a directory')
     }
   } catch {
-    mkdir(path, { recursive: true })
+    await mkdir(path, {recursive: true})
   }
 }
 
@@ -52,17 +52,17 @@ export async function readFile(path: string): Promise<Buffer> {
 
 export abstract class BaseCommand extends Command {
   static commonFlags = {
-    quiet: flags.boolean({ char: 'q', description: 'Quiet Output', default: false }),
-    environment: flags.string({ description: 'Environment', default: 'prod', hidden: true }),
+    quiet: flags.boolean({char: 'q', description: 'Quiet Output', default: false}),
+    environment: flags.string({description: 'Environment', default: 'prod', hidden: true}),
   }
 
   static endpointFlags = {
-    endpoint: flags.string({ char: 'e', description: 'Slash GraphQL Endpoint' }),
-    token: flags.string({ char: 't', description: 'Slash GraphQL Backend API Tokens' }),
+    endpoint: flags.string({char: 'e', description: 'Slash GraphQL Endpoint'}),
+    token: flags.string({char: 't', description: 'Slash GraphQL Backend API Tokens'}),
   }
 
   async backendFromOpts(opts: Output<{ endpoint: string | undefined; token: string | undefined; environment: string }, any>): Promise<Backend> {
-    const { apiServer, authFile, deploymentProtocol } = getEnvironment(opts.flags.environment)
+    const {apiServer, authFile, deploymentProtocol} = getEnvironment(opts.flags.environment)
     const endpoint = await this.convertToGraphQLEndpoint(apiServer, authFile, deploymentProtocol, opts.flags.endpoint)
     if (!endpoint) {
       this.error('Please pass an endpoint or cluster id with the -e flag')
@@ -93,7 +93,7 @@ export abstract class BaseCommand extends Command {
       return null
     }
 
-    for (const { url, jwtToken } of backends) {
+    for (const {url, jwtToken} of backends) {
       if (url === host) {
         return jwtToken as string
       }
@@ -116,8 +116,8 @@ export abstract class BaseCommand extends Command {
     }`
     const backendsResponse = await fetch(`${apiServer}/graphql`, {
       method: 'POST',
-      headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ query }),
+      headers: {Authorization: `Bearer ${token}`, 'Content-Type': 'application/json'},
+      body: JSON.stringify({query}),
     })
     const res = await backendsResponse.json()
     return res.data.deployments as APIBackend[]
@@ -126,7 +126,7 @@ export abstract class BaseCommand extends Command {
   async patchBackend(apiServer: string, token: string, deploymentUid: string, attrs: any) {
     const response = await fetch(`${apiServer}/deployment/${deploymentUid}`, {
       method: 'PATCH',
-      headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+      headers: {Authorization: `Bearer ${token}`, 'Content-Type': 'application/json'},
       body: JSON.stringify(attrs),
     })
 
@@ -141,8 +141,8 @@ export abstract class BaseCommand extends Command {
   async sendGraphQLRequest(apiServer: string, token: string, query: string, variables: any) {
     const response = await fetch(`${apiServer}/graphql`, {
       method: 'POST',
-      headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ query, variables }),
+      headers: {Authorization: `Bearer ${token}`, 'Content-Type': 'application/json'},
+      body: JSON.stringify({query, variables}),
     })
 
     const res = await response.json()
@@ -156,7 +156,7 @@ export abstract class BaseCommand extends Command {
 
   async getAccessToken(apiServer: string, authFile: string, forceRefresh = false) {
     try {
-      const { apiTime, access_token, expires_in, refresh_token } = await this.readAuthFile(authFile)
+      const {apiTime, access_token, expires_in} = await this.readAuthFile(authFile)
       if (forceRefresh || new Date() > new Date(new Date(apiTime).getTime() + (1000 * expires_in))) {
         this.error('Please login with `slash-graphql login`')
       }
@@ -177,8 +177,8 @@ export abstract class BaseCommand extends Command {
     this.warn('Attempting to refresh token')
     const res = await fetch(`${apiServer}/command-line/access-token/refresh`, {
       method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ refreshToken }),
+      headers: {'content-type': 'application/json'},
+      body: JSON.stringify({refreshToken}),
     })
     if (res.status !== 200) {
       this.warn('Could not refresh token. Please try logging in again with `slash-graphql login`')

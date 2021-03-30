@@ -1,14 +1,13 @@
-import { BaseCommand } from '../lib'
-import { getEnvironment } from '../lib/environments'
-import { flags } from '@oclif/command'
-import fetch from 'node-fetch'
-import { cli } from 'cli-ux'
+import {BaseCommand} from '../lib'
+import {getEnvironment} from '../lib/environments'
+import {flags} from '@oclif/command'
+import {cli} from 'cli-ux'
 
 const DELETE_DEPLOYMENT = `
 mutation DeleteDeployment($deploymentID: String!) {
   deleteDeployment(deploymentID: $deploymentID)
 }
-`;
+`
 export default class DestroyBackend extends BaseCommand {
   static description = 'Destroy a Backend by id'
 
@@ -18,10 +17,10 @@ export default class DestroyBackend extends BaseCommand {
 
   static flags = {
     ...BaseCommand.commonFlags,
-    confirm: flags.boolean({ char: 'y', description: 'Skip Confirmation', default: false }),
+    confirm: flags.boolean({char: 'y', description: 'Skip Confirmation', default: false}),
   }
 
-  static args = [{ name: 'id', description: 'Backend id', required: true }]
+  static args = [{name: 'id', description: 'Backend id', required: true}]
 
   confirm() {
     this.log('This will destroy your backend, and cannot be reversed')
@@ -30,7 +29,7 @@ export default class DestroyBackend extends BaseCommand {
 
   async run() {
     const opts = this.parse(DestroyBackend)
-    const { apiServer, authFile } = getEnvironment(opts.flags.environment)
+    const {apiServer, authFile} = getEnvironment(opts.flags.environment)
 
     const id = opts.args.id
 
@@ -54,13 +53,13 @@ export default class DestroyBackend extends BaseCommand {
       return
     }
 
-    const { errors, data } = await this.sendGraphQLRequest(apiServer, token, DELETE_DEPLOYMENT, {
+    const {errors, data} = await this.sendGraphQLRequest(apiServer, token, DELETE_DEPLOYMENT, {
       deploymentID: opts.args.id,
     })
 
     if (errors) {
-      for (const { message } of errors) {
-        this.error("Unable to update backend. " + message)
+      for (const {message} of errors) {
+        this.error('Unable to update backend. ' + message)
       }
       return
     }

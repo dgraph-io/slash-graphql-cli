@@ -2,10 +2,10 @@ import {BaseCommand} from '../lib'
 import {getEnvironment} from '../lib/environments'
 import {flags} from '@oclif/command'
 import fetch from 'node-fetch'
-import {cli} from 'cli-ux'
 
 export default class CreateApikey extends BaseCommand {
   static description = 'Create an API key for a Backend by id'
+
   static hidden = true
 
   static examples = [
@@ -15,7 +15,7 @@ export default class CreateApikey extends BaseCommand {
   static flags = {
     ...BaseCommand.commonFlags,
     name: flags.string({char: 'n', description: 'Client name', default: 'slash-graphql-cli'}),
-    role: flags.string({char: 'r', description: 'Client role', default: 'client', options: ['admin', 'client']})
+    role: flags.string({char: 'r', description: 'Client role', default: 'client', options: ['admin', 'client']}),
   }
 
   static args = [{name: 'id', description: 'Backend id', required: true}]
@@ -45,12 +45,12 @@ export default class CreateApikey extends BaseCommand {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({
         name: opts.flags.name,
-        role: opts.flags.role
-      })
+        role: opts.flags.role,
+      }),
     })
     if (response.status !== 200) {
       this.error(`Unable to create API key. Try logging in again\n${await response.text()}`)
