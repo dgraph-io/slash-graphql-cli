@@ -1,3 +1,5 @@
+**The slash-graphql CLI tool is deprecated and no longer maintained.**
+
 # slash-graphql
 
 Manage Slash GraphQL from the comfort of your command line!
