@@ -1,5 +1,6 @@
 **The slash-graphql CLI tool is deprecated and no longer maintained.**
 
+You can now manage your Cloud backends using the [Dgraph Cloud API](https://dgraph.io/docs/cloud/cloud-api/).
 # slash-graphql
 
 Manage Slash GraphQL from the comfort of your command line!
